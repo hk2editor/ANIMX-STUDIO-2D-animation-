@@ -3,16 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Animix Studio - Workspace</title>
+    <title>Animix Studio - Canvas Workspace</title>
     <style>
         :root {
-            --bg-color: #150505;
-            --panel-bg: #250a0a;
+            --bg-color: #200000;
             --main-red: #ff0000;
+            --dark-red: #800000;
+            --panel-bg: rgba(20, 5, 5, 0.95);
             --text-white: #ffffff;
-            --border-color: #401010;
+            --shadow-glow: rgba(255, 0, 0, 0.4);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+
+        body.theme-blue {
+            --bg-color: #001122;
+            --main-red: #00d2ff;
+            --dark-red: #005577;
+            --panel-bg: rgba(5, 15, 30, 0.95);
+            --shadow-glow: rgba(0, 210, 255, 0.4);
+        }
+
+        body.theme-gray {
+            --bg-color: #1a1a1a;
+            --main-red: #aaaaaa;
+            --dark-red: #555555;
+            --panel-bg: rgba(30, 30, 30, 0.95);
+            --shadow-glow: rgba(255, 255, 255, 0.2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Arial', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
             background-color: var(--bg-color);
             color: var(--text-white);
@@ -20,481 +45,458 @@
             display: flex;
             flex-direction: column;
             overflow: hidden;
+            user-select: none;
         }
-        header {
-            background: var(--panel-bg);
-            padding: 10px 20px;
+
+        .top-bar {
+            height: 50px;
+            background: rgba(0,0,0,0.6);
+            border-bottom: 2px solid var(--main-red);
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            border-bottom: 2px solid var(--border-color);
+            justify-content: space-between;
+            padding: 0 15px;
+            box-shadow: 0 2px 10px var(--shadow-glow);
         }
-        .btn {
-            background: #000;
+
+        .project-title {
+            font-size: 14px;
+            font-weight: bold;
+            color: var(--main-red);
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .top-btn {
+            background: #111;
             color: #fff;
             border: 1px solid var(--main-red);
-            padding: 6px 12px;
+            padding: 5px 10px;
+            font-size: 12px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
         }
-        .btn:active { transform: scale(0.95); }
+
         .main-workspace {
             flex: 1;
             display: flex;
             position: relative;
-            overflow: hidden;
+            height: calc(100vh - 170px);
         }
-        /* Sidebar Layers Panel */
-        .layers-sidebar {
-            width: 200px;
-            background: var(--panel-bg);
-            border-right: 2px solid var(--border-color);
+
+        .toolbox {
+            width: 55px;
+            background: rgba(0,0,0,0.5);
+            border-right: 2px solid var(--main-red);
             display: flex;
             flex-direction: column;
-            padding: 10px;
-            z-index: 10;
+            align-items: center;
+            padding: 10px 0;
+            gap: 12px;
         }
-        .layer-item {
+
+        .tool-btn {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--dark-red);
             background: #111;
-            padding: 8px;
-            margin: 5px 0;
-            border-radius: 4px;
-            border: 1px solid #333;
-            font-size: 12px;
+            color: #fff;
+            border-radius: 8px;
             cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-        }
-        .layer-item.active { border-color: var(--main-red); background: #3a0000; }
-        
-        /* Canvas Viewport */
-        .canvas-container {
-            flex: 1;
-            position: relative;
-            background: #111;
             display: flex;
             justify-content: center;
             align-items: center;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .tool-btn.active {
+            border-color: var(--main-red);
+            background: var(--dark-red);
+            box-shadow: 0 0 8px var(--main-red);
+        }
+
+        .color-picker-wrapper {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 2px solid #fff;
+            overflow: hidden;
+            position: relative;
+        }
+        .color-picker-wrapper input[type="color"] {
+            position: absolute;
+            top: -5px; left: -5px; width: 50px; height: 50px;
+            cursor: pointer;
+        }
+
+        .canvas-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #2b2b2b;
+            position: relative;
             overflow: hidden;
         }
-        .canvas-wrapper {
+
+        .canvas-container {
             position: relative;
             box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            transform-origin: center center;
-            background: #fff; /* White canvas default drawing */
+            border: 2px solid #555;
         }
-        .canvas-wrapper canvas {
-            position: absolute;
-            top:0; left:0;
-            width: 100%; height: 100%;
-        }
-        #drawing-canvas { z-index: 5; background: transparent; }
-        #onion-canvas { z-index: 2; opacity: 0.35; pointer-events: none; background: transparent; }
 
-        /* Timeline and Keyframes */
-        .timeline-area {
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        #onion-canvas {
+            opacity: 0.35;
+            pointer-events: none;
+        }
+
+        #main-canvas {
+            background: #ffffff;
+            z-index: 2;
+        }
+
+        .timeline-section {
             height: 120px;
-            background: var(--panel-bg);
-            border-top: 2px solid var(--border-color);
+            background: rgba(0,0,0,0.7);
+            border-top: 2px solid var(--main-red);
             display: flex;
             flex-direction: column;
-            padding: 10px;
+            padding: 5px;
+            box-shadow: 0 -2px 10px var(--shadow-glow);
         }
-        .timeline-controls {
+
+        .timeline-top {
             display: flex;
-            gap: 10px;
-            margin-bottom: 8px;
+            justify-content: space-between;
             align-items: center;
+            padding: 2px 10px;
+            border-bottom: 1px solid #333;
         }
-        .frames-slider-container {
+
+        .layer-info {
+            font-size: 12px;
+            color: var(--main-red);
+        }
+
+        .frame-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .frame-strip {
             flex: 1;
             display: flex;
             align-items: center;
-            background: #000;
-            padding: 5px;
-            border-radius: 4px;
-            position: relative;
+            gap: 6px;
+            overflow-x: auto;
+            padding: 8px 10px;
         }
-        .frames-track {
-            width: 100%;
-            -webkit-appearance: none;
-            background: #333;
-            height: 8px;
+
+        .frame-card {
+            width: 50px;
+            height: 50px;
+            background: #222;
+            border: 2px solid var(--dark-red);
             border-radius: 4px;
-        }
-        .frames-track::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            width: 16px; height: 16px;
-            background: var(--main-red);
-            border-radius: 50%;
+            flex-shrink: 0;
             cursor: pointer;
-        }
-        .keyframe-indicator-bar {
-            position: absolute;
-            top: 0; left: 5px; right: 5px;
-            height: 100%;
-            pointer-events: none;
-        }
-        .kf-dot {
-            position: absolute;
-            width: 6px; height: 6px;
-            background: #ffea00;
-            border-radius: 50%;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-        .tool-box {
-            position: absolute;
-            top: 10px; right: 10px;
-            background: rgba(0,0,0,0.8);
-            padding: 8px;
-            border-radius: 6px;
+            position: relative;
             display: flex;
-            flex-direction: column;
-            gap: 5px;
-            z-index: 100;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            color: #aaa;
+        }
+
+        .frame-card.active {
+            border-color: var(--main-red);
+            background: #400;
+            color: #fff;
+            box-shadow: 0 0 5px var(--main-red);
+        }
+
+        body.theme-blue .frame-card.active { background: #003355; }
+        body.theme-gray .frame-card.active { background: #444444; }
+
+        .frame-card span {
+            position: absolute;
+            top: 2px;
+            left: 4px;
+            font-size: 9px;
         }
     </style>
 </head>
-<body>
+<body class="landscape" id="app-body">
 
-    <header>
-        <div>
-            <button class="btn" onclick="saveAndGoHome()">⬅ SAVE & HOME</button>
-            <span id="proj-title-display" style="margin-left:15px; font-weight:bold; color:var(--main-red);">Project</span>
+    <div class="top-bar">
+        <button class="top-btn" onclick="goBackHome()">⬅ HOME</button>
+        <div class="project-title" id="active-title">ANIMIX WORKSPACE</div>
+        <div class="top-actions">
+            <button class="top-btn" onclick="toggleOnionSkin()">🧅 Onion Skin: <span id="onion-status">OFF</span></button>
+            <button class="top-btn" style="background: green; border-color: #0f0;" onclick="playStopAnimation(event)">▶ PLAY</button>
         </div>
-        <div>
-            <label style="font-size:11px;"><input type="checkbox" id="onion-toggle" checked onchange="toggleOnionSkin()"> Onion Skin</label>
-            <button class="btn" style="background:#006622; margin-left:10px;" onclick="renderVideoExport()">🎬 RENDER VIDEO</button>
-        </div>
-    </header>
+    </div>
 
     <div class="main-workspace">
-        <div class="layers-sidebar">
-            <h4 style="font-size:13px; margin-bottom:10px; text-transform:uppercase;">Layers Stack</h4>
-            <button class="btn" style="margin-bottom:10px;" onclick="addNewLayer()">+ Add New Layer</button>
-            <div id="layers-list-ui">
-                </div>
+        <div class="toolbox">
+            <button class="tool-btn active" id="tool-pen" onclick="setTool('pen')">PEN</button>
+            <button class="tool-btn" id="tool-eraser" onclick="setTool('eraser')">ERAS</button>
+            <button class="tool-btn" id="tool-bucket" onclick="setTool('bucket')">FILL</button>
+            <hr style="width:70%; border-color: var(--dark-red);">
+            <input type="range" id="brush-size" min="2" max="25" value="6" style="width:40px; accent-color: var(--main-red);">
+            <div class="color-picker-wrapper">
+                <input type="color" id="brush-color" value="#000000">
+            </div>
+            <hr style="width:70%; border-color: var(--dark-red);">
+            <button class="tool-btn" style="height:30px; font-size:10px;" onclick="clearCurrentFrame()">CLR</button>
         </div>
 
-        <div class="canvas-container" id="view-container">
-            <div class="tool-box">
-                <span style="font-size:10px; text-align:center;">Brush Color</span>
-                <input type="color" id="brush-color" value="#000000">
-                <input type="range" id="brush-size" min="1" max="20" value="5">
-                <button class="btn" onclick="clearCurrentFrame()">Clear</button>
-            </div>
-            
-            <div class="canvas-wrapper" id="canvas-wrapper-node" style="width: 640px; height: 360px;">
+        <div class="canvas-area">
+            <div class="canvas-container">
                 <canvas id="onion-canvas"></canvas>
-                <canvas id="drawing-canvas"></canvas>
+                <canvas id="main-canvas"></canvas>
             </div>
         </div>
     </div>
 
-    <div class="timeline-area">
-        <div class="timeline-controls">
-            <button class="btn" onclick="playStopAnimation()" id="play-btn">▶ Play</button>
-            <span id="frame-counter" style="font-size:12px;">Frame: 1 / 30</span>
-            <button class="btn" style="background:#440066;" onclick="addCapcutKeyframe()">🔶 + Keyframe Object</button>
-            <button class="btn" style="background:#663300;" onclick="animateKeyframeObject()">Transform Object</button>
+    <div class="timeline-section">
+        <div class="timeline-top">
+            <div class="layer-info">🎬 Layer 1 (Timeline Sheet)</div>
+            <div class="frame-controls">
+                <button class="top-btn" style="padding:2px 8px; font-size:11px;" onclick="insertNewBlankFrame()">➕ ADD FRAME</button>
+                <button class="top-btn" style="padding:2px 8px; font-size:11px; background:#500;" onclick="deleteCurrentFrame()">❌ DEL</button>
+            </div>
         </div>
-        <div class="frames-slider-container">
-            <input type="range" id="timeline-slider" class="frames-track" min="1" max="30" value="1" oninput="changeFrame(this.value)">
-            <div class="keyframe-indicator-bar" id="kf-dots-layer"></div>
-        </div>
+        <div class="frame-strip" id="frame-strip-container"></div>
     </div>
 
     <script>
-        // Project configs loaded via localStorage
-        const projId = localStorage.getItem('animix-active-id') || 'temp';
-        const projName = localStorage.getItem('animix-active-name') || 'Untitled';
-        const projSize = localStorage.getItem('animix-active-size') || '1280x720';
-        const projFps = parseInt(localStorage.getItem('animix-active-fps')) || 24;
+        const canvas = document.getElementById('main-canvas');
+        const ctx = canvas.getContext('2d');
+        const onionCanvas = document.getElementById('onion-canvas');
+        const oCtx = onionCanvas.getContext('2d');
 
-        document.getElementById('proj-title-display').innerText = `${projName} (${projSize})`;
-
-        // Core canvas objects setup
-        const dCanvas = document.getElementById('drawing-canvas');
-        const oCanvas = document.getElementById('onion-canvas');
-        const dCtx = dCanvas.getContext('2d');
-        const oCtx = oCanvas.getContext('2d');
-        const wrapper = document.getElementById('canvas-wrapper-node');
-
-        // Set dimensions based on templates
-        const [w, h] = projSize.split('x').map(Number);
-        dCanvas.width = w; dCanvas.height = h;
-        oCanvas.width = w; oCanvas.height = h;
-        
-        // Dynamically adjust workspace node box ratio scale
-        if(w > h) { wrapper.style.width = "640px"; wrapper.style.height = "360px"; }
-        else { wrapper.style.width = "280px"; wrapper.style.height = "500px"; }
-
-        // Animation Frames DB state
-        let currentFrame = 1;
-        let totalFrames = 30;
-        let frameDataStore = {}; // Holds ImageData per frame index
-        let keyframesDB = {}; // Frame keyframes positions storage
-        let activeLayers = ['Base Layer'];
-        let activeLayerIndex = 0;
-        let isPlaying = false;
-        let playInterval;
-
-        // Vector tracking for object animation mock properties
-        let animObjectState = { x: w/2, y: h/2, radius: 40 };
-
-        // Brush status variables
+        let framesData = []; 
+        let currentFrameIndex = 0;
+        let activeTool = 'pen';
         let isDrawing = false;
-        const brushColorInput = document.getElementById('brush-color');
-        const brushSizeInput = document.getElementById('brush-size');
+        let onionSkinActive = false;
+        let isPlaying = false;
+        let playInterval = null;
+        window.animationSpeedFPS = 24;
 
-        // Initial setup execution
-        window.addEventListener('load', () => {
-            loadSavedProjectData();
-            updateLayersUI();
-            refreshCanvasView();
-            initPinchZoomSystem();
-        });
-
-        // Setup Drawing Context Handlers
-        dCanvas.addEventListener('mousedown', startDrawing);
-        dCanvas.addEventListener('mousemove', drawLines);
-        window.addEventListener('mouseup', stopDrawing);
-
-        dCanvas.addEventListener('touchstart', (e) => { e.preventDefault(); startDrawing(e.touches[0]); });
-        dCanvas.addEventListener('touchmove', (e) => { e.preventDefault(); drawLines(e.touches[0]); });
-        window.addEventListener('touchend', stopDrawing);
-
-        function startDrawing(e) {
-            isDrawing = true;
-            dCtx.beginPath();
-            const rect = dCanvas.getBoundingClientRect();
-            // Scale coordination calculation logic mapping
-            const scaleX = dCanvas.width / rect.width;
-            const scaleY = dCanvas.height / rect.height;
-            dCtx.moveTo((e.clientX - rect.left) * scaleX, (e.clientY - rect.top) * scaleY);
-        }
-
-        function drawLines(e) {
-            if (!isDrawing) return;
-            const rect = dCanvas.getBoundingClientRect();
-            const scaleX = dCanvas.width / rect.width;
-            const scaleY = dCanvas.height / rect.height;
-            dCtx.lineTo((e.clientX - rect.left) * scaleX, (e.clientY - rect.top) * scaleY);
-            dCtx.strokeStyle = brushColorInput.value;
-            dCtx.lineWidth = brushSizeInput.value;
-            dCtx.lineCap = 'round';
-            dCtx.stroke();
-        }
-
-        function stopDrawing() {
-            if(isDrawing) {
-                isDrawing = false;
-                saveFrameState(currentFrame);
-            }
-        }
-
-        // --- Core Fix 1: Onion Skin Engine Logic ---
-        function runOnionSkinningOverlay() {
-            oCtx.clearRect(0, 0, oCanvas.width, oCanvas.height);
-            if(!document.getElementById('onion-toggle').checked) return;
-
-            let prevFrameIndex = currentFrame - 1;
-            if(prevFrameIndex >= 1 && frameDataStore[prevFrameIndex]) {
-                // Fetch context snapshot back frames array buffer array data map
-                oCtx.putImageData(frameDataStore[prevFrameIndex], 0, 0);
-            }
-        }
-
-        function toggleOnionSkin() { runOnionSkinningOverlay(); }
-
-        // --- Core Fix 2: State Data Store System (Auto-saving routing) ---
-        function saveFrameState(frameIdx) {
-            frameDataStore[frameIdx] = dCtx.getImageData(0, 0, dCanvas.width, dCanvas.height);
-        }
-
-        function loadSavedProjectData() {
-            let backupRaw = localStorage.getItem(`animix_data_blob_${projId}`);
-            if(backupRaw) {
-                let parsed = JSON.parse(backupRaw);
-                keyframesDB = parsed.keyframes || {};
-                renderKeyframeDots();
-                // Reconstruct frames from serialization string formats mock
-                // Due to local storage serialization limits, standard bitmap draws on vector array blocks
-            }
-        }
-
-        function saveAndGoHome() {
-            saveFrameState(currentFrame);
-            // Save state bundles
-            let exportStatePack = {
-                keyframes: keyframesDB,
-                metaInfo: { activeLayerIndex, totalFrames }
-            };
-            localStorage.setItem(`animix_data_blob_${projId}`, JSON.stringify(exportStatePack));
-            window.location.href = "index.html";
-        }
-
-        // --- Core Feature 3: Video Rendering Export Loop Component ---
-        function renderVideoExport() {
-            alert("Rendering started! Please wait until loop completes file compilation.");
+        window.onload = function() {
+            // Theme setup
+            const savedTheme = localStorage.getItem('animix-global-theme');
+            const body = document.getElementById('app-body');
+            body.classList.remove('theme-blue', 'theme-gray');
+            if(savedTheme === 'blue') body.classList.add('theme-blue');
+            if(savedTheme === 'gray') body.classList.add('theme-gray');
             
-            const stream = dCanvas.captureStream(projFps);
-            const mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
-            const chunks = [];
+            // Dynamic Project Configurations Setup
+            const activeName = localStorage.getItem('animix-active-name') || "Untitled";
+            const activeSize = localStorage.getItem('animix-active-size') || "1920x1080";
+            const activeFps = localStorage.getItem('animix-active-fps') || "24";
 
-            mediaRecorder.ondataavailable = (e) => { if(e.data.size > 0) chunks.push(e.data); };
-            mediaRecorder.onstop = () => {
-                const blob = new Blob(chunks, { type: 'video/webm' });
-                const videoURL = URL.createObjectURL(blob);
-                const downloadAnchor = document.createElement('a');
-                downloadAnchor.href = videoURL;
-                downloadAnchor.download = `${projName}_animation.webm`;
-                downloadAnchor.click();
-                alert("Render Complete! Downloading File.");
-            };
+            document.getElementById('active-title').innerText = `${activeName.toUpperCase()} (${activeFps} FPS)`;
+            window.animationSpeedFPS = parseInt(activeFps);
 
-            // Programmatically scrub timeline loop sequences pipeline capture recording layer context frames
-            let currentScrub = 1;
-            mediaRecorder.start();
+            const canvasContainer = document.querySelector('.canvas-container');
+            const dimensions = activeSize.split('x');
+            const targetWidth = parseInt(dimensions[0]) || 1920;
+            const targetHeight = parseInt(dimensions[1]) || 1080;
 
-            let scrubInterval = setInterval(() => {
-                if(currentScrub > totalFrames) {
-                    clearInterval(scrubInterval);
-                    mediaRecorder.stop();
-                    changeFrame(1);
-                } else {
-                    changeFrame(currentScrub);
-                    currentScrub++;
-                }
-            }, 1000 / projFps);
-        }
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            onionCanvas.width = targetWidth;
+            onionCanvas.height = targetHeight;
 
-        // --- Core Feature 4: Touch Pinch-To-Zoom Viewport Manipulator ---
-        let currentZoomScale = 1;
-        function initPinchZoomSystem() {
-            const container = document.getElementById('view-container');
-            let initialDistance = null;
-
-            container.addEventListener('touchmove', (e) => {
-                if (e.touches.length === 2) {
-                    e.preventDefault();
-                    // Distance formula computation metrics inside viewport
-                    let dist = Math.hypot(
-                        e.touches[0].clientX - e.touches[1].clientX,
-                        e.touches[0].clientY - e.touches[1].clientY
-                    );
-                    
-                    if (initialDistance === null) {
-                        initialDistance = dist;
-                    } else {
-                        let factor = dist / initialDistance;
-                        currentZoomScale = Math.min(Math.max(currentZoomScale * factor, 0.5), 4);
-                        wrapper.style.transform = `scale(${currentZoomScale})`;
-                        initialDistance = dist;
-                    }
-                }
-            });
-
-            container.addEventListener('touchend', () => { initialDistance = null; });
-            
-            // Mouse wheel scroll compatibility fallback desktop test support systems
-            container.addEventListener('wheel', (e) => {
-                e.preventDefault();
-                currentZoomScale += e.deltaY * -0.001;
-                currentZoomScale = Math.min(Math.max(0.5, currentZoomScale), 4);
-                wrapper.style.transform = `scale(${currentZoomScale})`;
-            });
-        }
-
-        // --- Core Feature 5: CapCut Style Linear Interpolation Keyframing System ---
-        function addCapcutKeyframe() {
-            // Store configuration specs matrix inside timeline tick indices
-            keyframesDB[currentFrame] = {
-                x: animObjectState.x + (Math.random() * 80 - 40), // Sample dynamic motion vectors shifting transforms offset parameters 
-                y: animObjectState.y + (Math.random() * 80 - 40)
-            };
-            renderKeyframeDots();
-            refreshCanvasView();
-            alert(`Keyframe Added on Frame ${currentFrame}!`);
-        }
-
-        function renderKeyframeDots() {
-            const container = document.getElementById('kf-dots-layer');
-            container.innerHTML = "";
-            Object.keys(keyframesDB).forEach(frame => {
-                let pct = ((frame - 1) / (totalFrames - 1)) * 100;
-                let dot = document.createElement('div');
-                dot.className = "kf-dot";
-                dot.style.left = `${pct}%`;
-                container.appendChild(dot);
-            });
-        }
-
-        function animateKeyframeObject() {
-            // Find object values interpolations
-            if(keyframesDB[currentFrame]) {
-                animObjectState.x = keyframesDB[currentFrame].x;
-                animObjectState.y = keyframesDB[currentFrame].y;
+            if (targetWidth > targetHeight) {
+                canvasContainer.style.width = "450px";
+                canvasContainer.style.height = (450 * (targetHeight / targetWidth)) + "px";
+            } else {
+                canvasContainer.style.height = "320px";
+                canvasContainer.style.width = (320 * (targetWidth / targetHeight)) + "px";
             }
-            refreshCanvasView();
+
+            initCanvasEngine();
+            setupInitialFrames();
+        };
+
+        function initCanvasEngine() {
+            const startDraw = (e) => {
+                if(activeTool === 'bucket') {
+                    executeBucketFill(document.getElementById('brush-color').value);
+                    return;
+                }
+                isDrawing = true;
+                ctx.beginPath();
+                const pos = getCoordinates(e);
+                ctx.moveTo(pos.x, pos.y);
+            };
+
+            const drawAction = (e) => {
+                if (!isDrawing || activeTool === 'bucket') return;
+                const pos = getCoordinates(e);
+                ctx.lineWidth = document.getElementById('brush-size').value;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                if (activeTool === 'pen') {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = document.getElementById('brush-color').value;
+                    ctx.lineTo(pos.x, pos.y);
+                    ctx.stroke();
+                } else if (activeTool === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineTo(pos.x, pos.y);
+                    ctx.stroke();
+                }
+            };
+
+            const stopDraw = () => {
+                if(isDrawing) {
+                    isDrawing = false;
+                    ctx.closePath();
+                    saveCurrentFrameState();
+                }
+            };
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', drawAction);
+            canvas.addEventListener('mouseup', stopDraw);
+
+            canvas.addEventListener('touchstart', (e) => { startDraw(e.touches[0]); e.preventDefault(); });
+            canvas.addEventListener('touchmove', (e) => { drawAction(e.touches[0]); e.preventDefault(); });
+            canvas.addEventListener('touchend', stopDraw);
         }
 
-        // --- Core Feature 6: Layers Manager Stack Infrastructure ---
-        function addNewLayer() {
-            let lName = `Layer ${activeLayers.length + 1}`;
-            activeLayers.push(lName);
-            updateLayersUI();
+        function getCoordinates(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: (e.clientX - rect.left) * (canvas.width / rect.width),
+                y: (e.clientY - rect.top) * (canvas.height / rect.height)
+            };
         }
 
-        function updateLayersUI() {
-            const layersListUi = document.getElementById('layers-list-ui');
-            layersListUi.innerHTML = "";
-            activeLayers.forEach((layer, index) => {
-                let div = document.createElement('div');
-                div.className = `layer-item ${index === activeLayerIndex ? 'active' : ''}`;
-                div.innerHTML = `<span>📂 ${layer}</span><small style="opacity:0.5">z-index: ${index}</small>`;
-                div.onclick = () => { activeLayerIndex = index; updateLayersUI(); };
-                layersListUi.prepend(div);
+        function executeBucketFill(fillHex) {
+            ctx.globalCompositeOperation = 'source-over';
+            ctx.fillStyle = fillHex;
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            saveCurrentFrameState();
+        }
+
+        function setupInitialFrames() {
+            insertNewBlankFrame();
+            switchActiveFrame(0);
+        }
+
+        function insertNewBlankFrame() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const blankCanvasState = canvas.toDataURL();
+            framesData.push(blankCanvasState);
+            renderTimelineStrip();
+            switchActiveFrame(framesData.length - 1);
+        }
+
+        function renderTimelineStrip() {
+            const strip = document.getElementById('frame-strip-container');
+            strip.innerHTML = "";
+            framesData.forEach((frame, idx) => {
+                const card = document.createElement('div');
+                card.className = `frame-card ${idx === currentFrameIndex ? 'active' : ''}`;
+                card.onclick = () => { switchActiveFrame(idx); };
+                card.innerHTML = `<span>#${idx + 1}</span>🎞️`;
+                strip.appendChild(card);
             });
         }
 
-        // Canvas View Render update pipeline controls switches switcher layout actions 
-        function changeFrame(val) {
-            saveFrameState(currentFrame);
-            currentFrame = parseInt(val);
-            document.getElementById('timeline-slider').value = currentFrame;
-            document.getElementById('frame-counter').innerText = `Frame: ${currentFrame} / ${totalFrames}`;
-            refreshCanvasView();
+        function switchActiveFrame(targetIndex) {
+            if(targetIndex < 0 || targetIndex >= framesData.length) return;
+            currentFrameIndex = targetIndex;
+            renderTimelineStrip();
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.globalCompositeOperation = 'source-over';
+
+            const img = new Image();
+            img.src = framesData[currentFrameIndex];
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0);
+                drawOnionSkinLayer();
+            };
+        }
+
+        function saveCurrentFrameState() {
+            framesData[currentFrameIndex] = canvas.toDataURL();
+        }
+
+        function deleteCurrentFrame() {
+            if(framesData.length <= 1) return;
+            framesData.splice(currentFrameIndex, 1);
+            switchActiveFrame(currentFrameIndex > 0 ? currentFrameIndex - 1 : 0);
         }
 
         function clearCurrentFrame() {
-            dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
-            saveFrameState(currentFrame);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            saveCurrentFrameState();
         }
 
-        function refreshCanvasView() {
-            dCtx.clearRect(0, 0, dCanvas.width, dCanvas.height);
-            
-            // Re-render frame context standard buffer bitmaps
-            if (frameDataStore[currentFrame]) {
-                dCtx.putImageData(frameDataStore[currentFrame], 0, 0);
-            }
+        function toggleOnionSkin() {
+            onionSkinActive = !onionSkinActive;
+            document.getElementById('onion-status').innerText = onionSkinActive ? "ON" : "OFF";
+            document.getElementById('onion-status').style.color = onionSkinActive ? "#0f0" : "#ff0000";
+            drawOnionSkinLayer();
+        }
 
-            // Perform CapCut layout transforms keyframe vectors evaluations draws engine step
-            if(keyframesDB[currentFrame]) {
-                dCtx.fillStyle = "rgba(255, 234, 0, 0.7)";
-                dCtx.beginPath();
-                dCtx.arc(keyframesDB[currentFrame].x, keyframesDB[currentFrame].y, animObjectState.radius, 0, Math.PI * 2);
-                dCtx.fill();
+        function drawOnionSkinLayer() {
+            oCtx.clearRect(0, 0, onionCanvas.width, onionCanvas.height);
+            if (onionSkinActive && currentFrameIndex > 0) {
+                const prevImg = new Image();
+                prevImg.src = framesData[currentFrameIndex - 1];
+                prevImg.onload = () => { oCtx.drawImage(prevImg, 0, 0); };
+            }
+        }
+
+        function playStopAnimation(event) {
+            const playBtn = event.target;
+            const currentFPS = window.animationSpeedFPS || 24;
+            if(isPlaying) {
+                isPlaying = false;
+                playBtn.innerText = "▶ PLAY";
+                playBtn.style.background = "green";
+                clearInterval(playInterval);
             } else {
-                // If current has no set key, check drawing base circle reference indicator
-                dCtx.fillStyle = "rgba(255, 0, 0, 0.3)";
-                dCtx.beginPath();
-                dCtx.arc(animObjectState.x, animObjectState.y, animObjectState.radius, 0, Math.PI * 2);
-                dCtx.fill();
+                isPlaying = true;
+                playBtn.innerText = "⏸ STOP";
+                playBtn.style.background = "orange";
+                let playbackIdx = 0;
+                playInterval = setInterval(() => {
+                    switchActiveFrame(playbackIdx);
+                    playbackIdx++;
+                    if(playbackIdx >= framesData.length) playbackIdx = 0;
+                }, 1000 / currentFPS);
             }
+        }
 
-            run
+        function setTool(toolName) {
+            activeTool = toolName;
+            document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`tool-${toolName}`).classList.add('active');
+        }
+
+        function goBackHome() { window.location.href = "index.html"; }
+    </script>
+</body>
+    </html>
