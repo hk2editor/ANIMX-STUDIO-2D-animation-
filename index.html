@@ -1,481 +1,723 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Animix Studio - Home</title>
-    <style>
-        :root {
-            --bg-color: #200000;
-            --main-red: #ff0000;
-            --dark-red: #800000;
-            --text-white: #ffffff;
-            --shadow-glow: rgba(255, 0, 0, 0.6);
-        }
-        body.theme-blue {
-            --bg-color: #001122;
-            --main-red: #00d2ff;
-            --dark-red: #005577;
-            --text-white: #ffffff;
-            --shadow-glow: rgba(0, 210, 255, 0.6);
-        }
-        body.theme-gray {
-            --bg-color: #1a1a1a;
-            --main-red: #aaaaaa;
-            --dark-red: #555555;
-            --text-white: #ffffff;
-            --shadow-glow: rgba(255, 255, 255, 0.3);
-        }
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Arial Black', Gadget, sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        body {
-            background-color: var(--bg-color);
-            background-image: radial-gradient(circle, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
-            color: var(--text-white);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            overflow-x: hidden;
-            transition: background 0.3s ease;
-        }
-        body.landscape .projects-container {
-            flex-direction: row;
-            overflow-x: auto;
-            width: 100%;
-            max-width: 850px;
-            padding: 20px;
-        }
-        body.portrait .projects-container {
-            flex-direction: column;
-            overflow-y: auto;
-            width: 100%;
-            max-width: 400px;
-            height: 350px;
-            padding: 20px;
-        }
-        .controls-bar {
-            width: 100%;
-            max-width: 800px;
-            display: flex;
-            justify-content: flex-start;
-            margin-bottom: 10px;
-        }
-        .toggle-ui-btn {
-            background: #111;
-            color: #fff;
-            border: 2px solid var(--main-red);
-            padding: 8px 15px;
-            font-size: 11px;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            box-shadow: 0 0 10px var(--shadow-glow);
-        }
-        .header {
-            text-align: center;
-            margin: 15px 0;
-        }
-        .logo-box {
-            border: 4px solid var(--main-red);
-            padding: 5px 25px;
-            background-color: rgba(0,0,0,0.5);
-            box-shadow: 0 0 15px var(--shadow-glow);
-        }
-        .logo-main {
-            font-size: 34px;
-            color: var(--main-red);
-            letter-spacing: 2px;
-            text-shadow: 2px 2px #000;
-        }
-        .logo-sub {
-            font-size: 13px;
-            color: var(--main-red);
-            display: block;
-            margin-top: -5px;
-            letter-spacing: 5px;
-        }
-        .top-nav {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            max-width: 600px;
-            margin: 20px 0;
-        }
-        .nav-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-white);
-            cursor: pointer;
-            text-align: center;
-            padding: 10px;
-        }
-        .nav-btn span {
-            display: block;
-            font-size: 14px;
-            color: var(--main-red);
-            margin-bottom: 8px;
-            text-shadow: 1px 1px #000;
-        }
-        .icon-circle {
-            width: 65px;
-            height: 65px;
-            border: 4px solid var(--main-red);
-            border-radius: 50%;
-            background: rgba(0,0,0,0.4);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 0 12px var(--shadow-glow);
-            margin: 0 auto;
-        }
-        .line {
-            width: 26px;
-            height: 4px;
-            background-color: var(--main-red);
-            margin: 3px 0;
-            border-radius: 2px;
-        }
-        .plus {
-            font-size: 38px;
-            color: var(--main-red);
-            line-height: 1;
-        }
-        .projects-section {
-            width: 100%;
-            text-align: center;
-            margin-top: 15px;
-        }
-        .projects-title {
-            font-size: 24px;
-            text-transform: uppercase;
-            border-bottom: 3px solid var(--text-white);
-            display: inline-block;
-            padding-bottom: 4px;
-            margin-bottom: 20px;
-            text-shadow: 2px 2px #000;
-        }
-        .projects-container {
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 25px;
-            scrollbar-width: none;
-            margin: 0 auto;
-        }
-        .projects-container::-webkit-scrollbar {
-            display: none;
-        }
-        .project-card {
-            border: 4px solid var(--main-red);
-            border-radius: 15px;
-            width: 170px;
-            height: 110px;
-            position: relative;
-            flex-shrink: 0;
-            cursor: pointer;
-            background-image: linear-gradient(to bottom, #73a9c2 55%, #5c3a21 55%, #5c3a21 75%, #3d2314 75%);
-            background-size: cover;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
-            transition: transform 0.2s;
-        }
-        .project-card:active {
-            transform: scale(0.92);
-        }
-        .project-name-tag {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0,0,0,0.75);
-            color: #fff;
-            font-size: 11px;
-            padding: 4px 0;
-            text-align: center;
-            border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-        }
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            z-index: 9999;
-            display: none; 
-            justify-content: center;
-            align-items: center;
-        }
-        .modal-box {
-            background: #250505;
-            border: 4px solid var(--main-red);
-            border-radius: 12px;
-            padding: 20px;
-            width: 90%;
-            max-width: 400px;
-            box-shadow: 0 0 25px var(--shadow-glow);
-        }
-        body.theme-blue .modal-box { background: #051525; }
-        body.theme-gray .modal-box { background: #222222; }
-        .modal-box h2 {
-            color: var(--main-red);
-            text-align: center;
-            font-size: 20px;
-            margin-bottom: 15px;
-            border-bottom: 2px solid var(--main-red);
-            padding-bottom: 5px;
-        }
-        .field-group {
-            margin-bottom: 12px;
-        }
-        .field-group label {
-            display: block;
-            font-size: 13px;
-            color: #ccc;
-            margin-bottom: 4px;
-        }
-        .field-group input, .field-group select {
-            width: 100%;
-            padding: 9px;
-            background: rgba(0, 0, 0, 0.6);
-            border: 2px solid var(--dark-red);
-            color: #fff;
-            border-radius: 6px;
-            font-size: 13px;
-        }
-        .custom-wh-inputs {
-            display: none;
-            gap: 10px;
-            margin-top: 8px;
-        }
-        .custom-wh-inputs div {
-            flex: 1;
-        }
-        .action-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 18px;
-            gap: 10px;
-        }
-        .panel-btn {
-            flex: 1;
-            padding: 10px;
-            border: 2px solid var(--main-red);
-            background: transparent;
-            color: #fff;
-            font-weight: bold;
-            font-size: 12px;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-        .panel-btn-submit {
-            background: var(--main-red);
-        }
-        .panel-btn:active {
-            transform: scale(0.95);
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Animix Studio - Home</title>
+
+<style>
+:root{
+--bg:#120000;
+--main:#ff0000;
+--shadow:rgba(255,0,0,.45);
+--text:#fff;
+}
+
+body.theme-blue{
+--bg:#00131d;
+--main:#00d2ff;
+--shadow:rgba(0,210,255,.4);
+}
+
+body.theme-gray{
+--bg:#1a1a1a;
+--main:#bbbbbb;
+--shadow:rgba(255,255,255,.25);
+}
+
+*{
+box-sizing:border-box;
+margin:0;
+padding:0;
+font-family:Arial Black,sans-serif;
+-webkit-tap-highlight-color:transparent;
+}
+
+body{
+background:var(--bg);
+color:var(--text);
+min-height:100vh;
+display:flex;
+flex-direction:column;
+align-items:center;
+padding:20px;
+overflow:hidden;
+}
+
+.header{
+margin-top:10px;
+text-align:center;
+}
+
+.logo-box{
+border:4px solid var(--main);
+padding:8px 25px;
+box-shadow:0 0 20px var(--shadow);
+}
+
+.logo-main{
+font-size:34px;
+color:var(--main);
+display:block;
+letter-spacing:3px;
+}
+
+.logo-sub{
+font-size:12px;
+letter-spacing:6px;
+color:var(--main);
+}
+
+.top-nav{
+display:flex;
+gap:45px;
+margin-top:25px;
+}
+
+.nav-btn{
+background:none;
+border:none;
+color:#fff;
+cursor:pointer;
+}
+
+.nav-btn span{
+display:block;
+color:var(--main);
+margin-bottom:8px;
+font-size:14px;
+}
+
+.icon-circle{
+width:70px;
+height:70px;
+border:4px solid var(--main);
+border-radius:50%;
+display:flex;
+align-items:center;
+justify-content:center;
+box-shadow:0 0 12px var(--shadow);
+background:rgba(0,0,0,.4);
+}
+
+.plus{
+font-size:42px;
+color:var(--main);
+}
+
+.line{
+width:28px;
+height:4px;
+background:var(--main);
+margin:3px 0;
+border-radius:3px;
+}
+
+.projects-title{
+margin-top:30px;
+margin-bottom:15px;
+font-size:22px;
+border-bottom:2px solid #fff;
+padding-bottom:4px;
+}
+
+.projects-container{
+width:100%;
+max-width:420px;
+height:330px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:15px;
+padding:5px;
+}
+
+.projects-container::-webkit-scrollbar{
+display:none;
+}
+
+.project-card{
+height:100px;
+border:3px solid var(--main);
+border-radius:12px;
+background:linear-gradient(#6aa4bf 55%,#5b3920 55%);
+position:relative;
+cursor:pointer;
+box-shadow:0 0 10px rgba(0,0,0,.5);
+}
+
+.project-card:active{
+transform:scale(.97);
+}
+
+.project-name{
+position:absolute;
+bottom:0;
+left:0;
+width:100%;
+background:rgba(0,0,0,.7);
+padding:6px;
+font-size:12px;
+text-align:center;
+}
+
+.modal{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.85);
+display:none;
+justify-content:center;
+align-items:center;
+z-index:999;
+}
+
+.modal-box{
+width:90%;
+max-width:400px;
+background:#200000;
+border:3px solid var(--main);
+padding:20px;
+border-radius:12px;
+box-shadow:0 0 20px var(--shadow);
+}
+
+body.theme-blue .modal-box{
+background:#051b28;
+}
+
+body.theme-gray .modal-box{
+background:#2a2a2a;
+}
+
+.modal-box h2{
+text-align:center;
+color:var(--main);
+margin-bottom:20px;
+}
+
+.field{
+margin-bottom:15px;
+}
+
+.field label{
+display:block;
+margin-bottom:5px;
+font-size:13px;
+}
+
+.field input,
+.field select{
+width:100%;
+padding:10px;
+background:#111;
+border:2px solid var(--main);
+color:#fff;
+border-radius:6px;
+}
+
+.custom-row{
+display:none;
+gap:8px;
+margin-top:8px;
+}
+
+.custom-row input{
+width:50%;
+}
+
+.btn-row{
+display:flex;
+gap:10px;
+margin-top:20px;
+}
+
+.btn{
+flex:1;
+padding:10px;
+border:none;
+cursor:pointer;
+border-radius:6px;
+font-weight:bold;
+}
+
+.btn-red{
+background:var(--main);
+color:#000;
+}
+
+.btn-dark{
+background:#111;
+color:#fff;
+border:1px solid var(--main);
+}
+</style>
 </head>
-<body class="landscape" id="app-body">
+<body id="app-body">
 
-    <div class="controls-bar">
-        <button class="toggle-ui-btn" id="ui-toggle-btn" onclick="uiLayoutToggle()">UI Mode: Horizontal</button>
-    </div>
+<div class="header">
+<div class="logo-box">
+<span class="logo-main">ANIMIX</span>
+<span class="logo-sub">STUDIO</span>
+</div>
+</div>
 
-    <div class="header">
-        <div class="logo-box">
-            <span class="logo-main">ANIMIX</span>
-            <span class="logo-sub">STUDIO</span>
-        </div>
-    </div>
+<div class="top-nav">
 
-    <div class="top-nav">
-        <button class="nav-btn" onclick="openPopupPanel('settings-popup')">
-            <span>SETTING</span>
-            <div class="icon-circle">
-                <div class="line"></div>
-                <div class="line"></div>
-                <div class="line"></div>
-            </div>
-        </button>
+<button class="nav-btn"
+onclick="openModal('settingsModal')">
+<span>SETTING</span>
+<div class="icon-circle">
+<div>
+<div class="line"></div>
+<div class="line"></div>
+<div class="line"></div>
+</div>
+</div>
+</button>
 
-        <button class="nav-btn" onclick="openPopupPanel('create-popup')">
-            <span>CREATE</span>
-            <div class="icon-circle">
-                <div class="plus">+</div>
-            </div>
-        </button>
-    </div>
+<button class="nav-btn"
+onclick="openModal('createModal')">
+<span>CREATE</span>
+<div class="icon-circle">
+<div class="plus">+</div>
+</div>
+</button>
 
-    <div class="projects-section">
-        <h2 class="projects-title">Projects File Folder</h2>
-        <div class="projects-container" id="folder-list">
-            </div>
-    </div>
+<button class="nav-btn"
+onclick="document.getElementById('aniImport').click()">
+<span>IMPORT</span>
+<div class="icon-circle">
+<div class="plus">↓</div>
+</div>
+</button>
 
-    <div class="modal-overlay" id="create-popup">
-        <div class="modal-box">
-            <h2>NEW ANIMATION PROJECT</h2>
-            <div class="field-group">
-                <label>Enter Project Name:</label>
-                <input type="text" id="input-proj-name" placeholder="My New Anime 2D">
-            </div>
-            <div class="field-group">
-                <label>Select Animation Speed (FPS):</label>
-                <select id="input-proj-fps">
-                    <option value="12">12 FPS (Cartoon style)</option>
-                    <option value="24" selected>24 FPS (Anime Standard)</option>
-                    <option value="30">30 FPS (Smooth Digital)</option>
-                </select>
-            </div>
-            <div class="field-group">
-                <label>Select Canvas Size Template:</label>
-                <select id="input-proj-res" onchange="toggleCustomFields(this.value)">
-                    <option value="1920x1080">1920x1080 (Full HD YouTube)</option>
-                    <option value="1280x720">1280x720 (Standard HD)</option>
-                    <option value="1080x1920">1080x1920 (TikTok / Reels Vertical)</option>
-                    <option value="custom-option">⚙️ Custom Size Layout</option>
-                </select>
-                <div class="custom-wh-inputs" id="custom-resolution-box">
-                    <div>
-                        <label>Width (px):</label>
-                        <input type="number" id="custom-w-val" value="1080">
-                    </div>
-                    <div>
-                        <label>Height (px):</label>
-                        <input type="number" id="custom-height-val" value="1080">
-                    </div>
-                </div>
-            </div>
-            <div class="action-buttons">
-                <button class="panel-btn" onclick="closePopupPanel('create-popup')">CANCEL</button>
-                <button class="panel-btn panel-btn-submit" onclick="executeCreateProject()">CREATE & EXIT</button>
-            </div>
-        </div>
-    </div>
+<input
+type="file"
+id="aniImport"
+accept=".ani"
+style="display:none"
+onchange="importAniFile(event)">
 
-    <div class="modal-overlay" id="settings-popup">
-        <div class="modal-box">
-            <h2>ANIMATION STUDIO SETTINGS</h2>
-            <div class="field-group">
-                <label>Change App Skin Theme Color:</label>
-                <select id="select-app-theme">
-                    <option value="default">Crimson Dark Red (Default)</option>
-                    <option value="blue">Neon Blue Cyber Edition</option>
-                    <option value="gray">Classic Mechanic Dark Gray</option>
-                </select>
-            </div>
-            <div class="action-buttons">
-                <button class="panel-btn panel-btn-submit" style="width: 100%;" onclick="executeApplySettings()">SAVE & APPLY CHANGES</button>
-            </div>
-        </div>
-    </div>
+</div>
 
-    <script>
-        // LocalStorage system to persistent keep project list
-        let animixProjects = JSON.parse(localStorage.getItem('animix_projects_list')) || [
-            { id: "p1", name: 'Action Fight Scene', size: '1920x1080', fps: '24' },
-            { id: "p2", name: 'Stickman Jump Walk', size: '1280x720', fps: '12' }
-        ];
+<h2 class="projects-title">Projects</h2>
+<div class="projects-container" id="projectsList"></div>
 
-        window.onload = function() {
-            // Apply saved Theme
-            const savedTheme = localStorage.getItem('animix-global-theme');
-            const body = document.getElementById('app-body');
-            if(savedTheme === 'blue') {
-                body.className = "landscape theme-blue";
-                document.getElementById('select-app-theme').value = "blue";
-            } else if(savedTheme === 'gray') {
-                body.className = "landscape theme-gray";
-                document.getElementById('select-app-theme').value = "gray";
-            }
-            renderProjects();
-        };
+<!-- CREATE -->
+<div class="modal" id="createModal">
+<div class="modal-box">
+<h2>Create New Project</h2>
 
-        function renderProjects() {
-            const targetFolder = document.getElementById('folder-list');
-            targetFolder.innerHTML = "";
-            animixProjects.forEach(proj => {
-                const cardElement = document.createElement('div');
-                cardElement.className = "project-card";
-                cardElement.onclick = function() { triggerOpenWorkspace(proj.id, proj.name, proj.size, proj.fps); };
+<div class="field">
+<label>Project Name</label>
+<input id="projectName" placeholder="My Animation">
+</div>
 
-                const tagElement = document.createElement('div');
-                tagElement.className = "project-name-tag";
-                tagElement.innerHTML = `${proj.name}<br><small>${proj.size} (${proj.fps} FPS)</small>`;
+<div class="field">
+<label>FPS</label>
+<select id="projectFPS" onchange="toggleCustomFPS(this.value)">
+<option value="12">12</option>
+<option value="24" selected>24</option>
+<option value="30">30</option>
+<option value="60">60</option>
+<option value="custom">Custom FPS</option>
+</select>
 
-                cardElement.appendChild(tagElement);
-                targetFolder.appendChild(cardElement);
-            });
-            localStorage.setItem('animix_projects_list', JSON.stringify(animixProjects));
-        }
+<input
+id="customFPS"
+type="number"
+placeholder="Enter custom FPS"
+style="display:none;margin-top:8px;"
+min="1"
+max="240">
+</div>
 
-        function uiLayoutToggle() {
-            const body = document.getElementById('app-body');
-            const toggleButton = document.getElementById('ui-toggle-btn');
-            if (body.classList.contains('landscape')) {
-                body.classList.remove('landscape');
-                body.classList.add('portrait');
-                toggleButton.innerText = "UI Mode: Vertical";
-            } else {
-                body.classList.remove('portrait');
-                body.classList.add('landscape');
-                toggleButton.innerText = "UI Mode: Horizontal";
-            }
-        }
+<div class="field">
+<label>Canvas Size</label>
+<select id="projectSize"
+onchange="toggleCustomCanvas(this.value)">
+<option value="1920x1080">1920x1080</option>
+<option value="1280x720">1280x720</option>
+<option value="1080x1920">1080x1920</option>
+<option value="custom">Custom Size</option>
+</select>
 
-        function openPopupPanel(id) { document.getElementById(id).style.display = "flex"; }
-        function closePopupPanel(id) { document.getElementById(id).style.display = "none"; }
-        function toggleCustomFields(selectedValue) {
-            document.getElementById('custom-resolution-box').style.display = (selectedValue === "custom-option") ? "flex" : "none";
-        }
+<div class="custom-row" id="customCanvasBox">
+<input
+id="customWidth"
+type="number"
+placeholder="Width"
+min="1">
 
-        function executeApplySettings() {
-            const themeValue = document.getElementById('select-app-theme').value;
-            const body = document.getElementById('app-body');
-            localStorage.setItem('animix-global-theme', themeValue);
-            body.classList.remove('theme-blue', 'theme-gray');
-            if (themeValue === "blue") body.classList.add('theme-blue');
-            if (themeValue === "gray") body.classList.add('theme-gray');
-            closePopupPanel('settings-popup');
-        }
+<input
+id="customHeight"
+type="number"
+placeholder="Height"
+min="1">
+</div>
+</div>
 
-        function executeCreateProject() {
-            const projNameInput = document.getElementById('input-proj-name').value.trim();
-            const finalName = projNameInput ? projNameInput : "New Project";
-            const fpsValue = document.getElementById('input-proj-fps').value;
-            const resTemplate = document.getElementById('input-proj-res').value;
+<div class="btn-row">
+<button class="btn btn-dark"
+onclick="closeModal('createModal')">
+Cancel
+</button>
 
-            let resolutionText = resTemplate;
-            if (resTemplate === "custom-option") {
-                const w = document.getElementById('custom-w-val').value || "1080";
-                const h = document.getElementById('custom-height-val').value || "1080";
-                resolutionText = `${w}x${h}`;
-            }
+<button class="btn btn-red"
+onclick="createProject()">
+Create
+</button>
+</div>
+</div>
+</div>
 
-            const newId = "proj_" + Date.now();
-            animixProjects.push({ id: newId, name: finalName, size: resolutionText, fps: fpsValue });
-            renderProjects();
+<!-- SETTINGS -->
+<div class="modal" id="settingsModal">
+<div class="modal-box">
+<h2>App Settings</h2>
 
-            document.getElementById('input-proj-name').value = "";
-            closePopupPanel('create-popup');
-        }
+<div class="field">
+<label>Theme</label>
+<select id="themeSelect">
+<option value="default">Default Red</option>
+<option value="blue">Blue</option>
+<option value="gray">Gray</option>
+</select>
+</div>
 
-        function triggerOpenWorkspace(id, name, size, fps) {
-            localStorage.setItem('animix-active-id', id);
-            localStorage.setItem('animix-active-name', name);
-            localStorage.setItem('animix-active-size', size);
-            localStorage.setItem('animix-active-fps', fps);
-            window.location.href = "project.html";
-        }
-    </script>
+<div class="btn-row">
+<button class="btn btn-dark"
+onclick="closeModal('settingsModal')">
+Cancel
+</button>
+
+<button class="btn btn-red"
+onclick="saveTheme()">
+Save
+</button>
+</div>
+</div>
+</div>
+
+<script>
+let projects=
+JSON.parse(
+localStorage.getItem(
+'animix_projects_list'
+)
+) || [];
+
+window.onload=function(){
+loadTheme();
+renderProjects();
+};
+
+function loadTheme(){
+let saved=
+localStorage.getItem(
+'animix-global-theme'
+);
+
+let body=
+document.getElementById(
+'app-body'
+);
+
+body.classList.remove(
+'theme-blue',
+'theme-gray'
+);
+
+if(saved==="blue")
+body.classList.add(
+'theme-blue'
+);
+
+if(saved==="gray")
+body.classList.add(
+'theme-gray'
+);
+
+document.getElementById(
+'themeSelect'
+).value=
+saved || "default";
+}
+
+function saveTheme(){
+let val=
+document.getElementById(
+'themeSelect'
+).value;
+
+localStorage.setItem(
+'animix-global-theme',
+val
+);
+
+loadTheme();
+
+closeModal(
+'settingsModal'
+);
+}
+
+function openModal(id){
+document.getElementById(
+id
+).style.display="flex";
+}
+
+function closeModal(id){
+document.getElementById(
+id
+).style.display="none";
+}
+
+function toggleCustomFPS(v){
+document.getElementById(
+'customFPS'
+).style.display=
+v==="custom"
+? "block"
+: "none";
+}
+
+function toggleCustomCanvas(v){
+document.getElementById(
+'customCanvasBox'
+).style.display=
+v==="custom"
+? "flex"
+: "none";
+}
+
+function createProject(){
+
+let name=
+document.getElementById(
+'projectName'
+).value.trim()
+|| "New Project";
+
+let fps=
+document.getElementById(
+'projectFPS'
+).value;
+
+if(fps==="custom"){
+fps=
+document.getElementById(
+'customFPS'
+).value || "24";
+}
+
+let size=
+document.getElementById(
+'projectSize'
+).value;
+
+if(size==="custom"){
+let w=
+document.getElementById(
+'customWidth'
+).value || "1080";
+
+let h=
+document.getElementById(
+'customHeight'
+).value || "1080";
+
+size=w+"x"+h;
+}
+
+let project={
+id:"proj_"+Date.now(),
+name:name,
+fps:fps,
+size:size,
+frames:[],
+layers:[],
+audio:null
+};
+
+projects.push(project);
+
+localStorage.setItem(
+'animix_projects_list',
+JSON.stringify(projects)
+);
+
+localStorage.setItem(
+'animix-active-id',
+project.id
+);
+
+localStorage.setItem(
+'animix-active-name',
+project.name
+);
+
+localStorage.setItem(
+'animix-active-fps',
+project.fps
+);
+
+localStorage.setItem(
+'animix-active-size',
+project.size
+);
+
+window.location.href=
+"project.html";
+}
+
+function renderProjects(){
+let box=
+document.getElementById(
+'projectsList'
+);
+
+box.innerHTML="";
+
+projects.forEach(p=>{
+
+let card=
+document.createElement(
+'div'
+);
+
+card.className=
+'project-card';
+
+card.onclick=
+()=>openProject(
+p.id
+);
+
+let label=
+document.createElement(
+'div'
+);
+
+label.className=
+'project-name';
+
+label.innerHTML=
+`${p.name}<br>
+<small>
+${p.size}
+|
+${p.fps} FPS
+</small>`;
+
+card.appendChild(
+label
+);
+
+box.appendChild(
+card
+);
+
+});
+}
+
+function openProject(id){
+
+let p=
+projects.find(
+x=>x.id===id
+);
+
+if(!p)return;
+
+localStorage.setItem(
+'animix-active-id',
+p.id
+);
+
+localStorage.setItem(
+'animix-active-name',
+p.name
+);
+
+localStorage.setItem(
+'animix-active-fps',
+p.fps
+);
+
+localStorage.setItem(
+'animix-active-size',
+p.size
+);
+
+window.location.href=
+"project.html";
+}
+
+function importAniFile(e){
+
+let file=
+e.target.files[0];
+
+if(!file)return;
+
+let reader=
+new FileReader();
+
+reader.onload=
+function(ev){
+
+try{
+
+let project=
+JSON.parse(
+ev.target.result
+);
+
+projects.push(
+project
+);
+
+localStorage.setItem(
+'animix_projects_list',
+JSON.stringify(
+projects
+)
+);
+
+renderProjects();
+
+alert(
+'Project Imported!'
+);
+
+}catch{
+alert(
+'Invalid .ani file'
+);
+}
+
+};
+
+reader.readAsText(
+file
+);
+}
+
+window.onclick=function(e){
+if(
+e.target.classList
+.contains(
+'modal'
+)
+){
+e.target.style.display=
+'none';
+}
+};
+</script>
+
 </body>
 </html>
