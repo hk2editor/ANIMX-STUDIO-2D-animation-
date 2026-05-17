@@ -17,6 +17,8 @@
   --accent-yellow: #ffeb3b;
   --border-color: #222222;
   --sidebar-width: 65px;
+  --bottom-panel-height: 240px;
+  --right-panel-width: 320px;
 }
 
 body.theme-blue {
@@ -54,50 +56,33 @@ body {
   touch-action: none;
 }
 
-/* Master Application Container */
+/* Master Adaptive Core Application Container */
 .app {
   width: 100%;
-  max-width: 500px;
   height: 100vh;
   display: flex;
   flex-direction: column;
   background: var(--bg);
   position: relative;
-  box-shadow: 0 0 50px rgba(0,0,0,0.9);
-  transition: max-width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+  overflow: hidden;
 }
 
-/* Desktop UI Override class */
-.app.desktop-ui {
-  max-width: 100% !important;
-  height: 100vh;
-  border: none;
-  border-radius: 0;
-}
-
-@media (min-width: 768px) {
-  .app:not(.desktop-ui) {
-    height: 95vh;
-    border-radius: 16px;
-    border: 2px solid var(--border-color);
-  }
-}
-
-/* Top Toolbar Deck */
+/* Dual Top/Bottom Header Action Decks */
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 12px;
-  background: rgba(0,0,0,0.8);
+  padding: 10px;
+  background: rgba(0,0,0,0.9);
   border-bottom: 2px solid var(--main);
-  z-index: 20;
+  z-index: 25;
+  height: 54px;
 }
 
 .header-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 900;
-  letter-spacing: 1.5px;
+  letter-spacing: 1px;
   color: #fff;
   text-shadow: 0 0 8px var(--shadow);
   text-transform: uppercase;
@@ -105,7 +90,7 @@ body {
 
 .header-center, .header-right {
   display: flex;
-  gap: 8px;
+  gap: 6px;
   align-items: center;
 }
 
@@ -113,7 +98,7 @@ body {
   background: rgba(20,20,20,0.8);
   border: 1px solid var(--main);
   color: #fff;
-  padding: 8px 14px;
+  padding: 6px 12px;
   border-radius: 6px;
   cursor: pointer;
   font-size: 11px;
@@ -121,38 +106,39 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  transition: all 0.15s ease;
+  gap: 4px;
+  transition: all 0.12s ease;
 }
 .btn:active { transform: scale(0.95); background: var(--main); color: #000; }
 .btn.active { background: var(--main); color: #000; box-shadow: 0 0 8px var(--shadow); }
-.btn:disabled { opacity: 0.3; pointer-events: none; }
+.btn:disabled { opacity: 0.2; pointer-events: none; }
 
-/* Main Creative Workspace Layout */
+/* Main Dynamic Responsive Workspace Hub Layout Grid Engine */
 .workspace {
   display: flex;
   flex: 1;
   position: relative;
   overflow: hidden;
+  flex-direction: row;
 }
 
-/* Vertical Action Strip / Sidebar */
+/* Vertical Action Strip / Left Sidebar */
 .sidebar {
   width: var(--sidebar-width);
-  background: rgba(0,0,0,0.75);
-  border-right: 1px solid rgba(255,255,255,0.05);
+  background: rgba(0,0,0,0.85);
+  border-right: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px 0;
-  gap: 12px;
+  padding: 10px 0;
+  gap: 10px;
   overflow-y: auto;
   z-index: 15;
 }
 
 .tool-btn {
-  width: 46px;
-  height: 46px;
+  width: 48px;
+  height: 48px;
   border: 1px solid var(--main);
   background: rgba(0,0,0,0.6);
   color: #fff;
@@ -165,7 +151,6 @@ body {
   justify-content: center;
   align-items: center;
   gap: 2px;
-  transition: all 0.15s ease;
 }
 .tool-btn.active { background: var(--main); color: #000; box-shadow: 0 0 10px var(--shadow); border-color: #fff; }
 
@@ -179,11 +164,11 @@ input[type="color"] {
   padding: 2px;
 }
 
-/* Infinite Canvas Stage Area */
+/* Interactive Canvas Central Environment */
 .canvas-area {
   flex: 1;
   position: relative;
-  background: #141414;
+  background: #111111;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -191,12 +176,11 @@ input[type="color"] {
   overflow: hidden;
 }
 
-/* Dynamic Keyframe HUD Overlay */
 #keyframeHUD {
   display: none;
   gap: 8px;
   background: rgba(5,5,5,0.96);
-  padding: 10px 18px;
+  padding: 8px 16px;
   border-radius: 30px;
   border: 2px solid var(--accent-blue);
   position: absolute;
@@ -205,7 +189,6 @@ input[type="color"] {
   box-shadow: 0 6px 25px rgba(0,0,0,0.8);
 }
 
-/* Scalable and Pannable Canvas Node Box */
 #canvasContainer {
   position: relative;
   background: #ffffff;
@@ -223,33 +206,55 @@ input[type="color"] {
 #onionCanvas { opacity: 0.35; pointer-events: none; z-index: 2; }
 #lassoCanvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 20; }
 #playbackRenderCanvas { position: absolute; top: 0; left: 0; pointer-events: none; z-index: 25; display: none; background: transparent; }
-#bgImage { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0.5; display: none; pointer-events: none; z-index: 1; }
-#bgVideo { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0.5; display: none; pointer-events: none; z-index: 1; }
+#bgImage, #bgVideo { position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0.4; display: none; pointer-events: none; z-index: 1; }
 
-/* Control Center Bottom Dock */
-.bottom-panel {
-  height: 275px;
+/* =======================================================================================
+   FLUID RESPONSIVE TIMELINE CORE DECK CONSTRAINTS (VERTICAL PORTRAIT VS HORIZONTAL LANDSCAPE)
+   ======================================================================================= */
+.main-layout-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.timeline-panel {
   background: #090909;
-  border-top: 1px solid rgba(255,255,255,0.05);
+  border-top: 1px solid var(--border-color);
   display: flex;
   flex-direction: column;
   z-index: 20;
 }
 
-/* Sub-Timeline Interpolation Scrubber */
+/* Global Media Query Orientation Structural Shifting Rules Engine */
+@media (orientation: portrait) {
+  .main-layout-wrapper { flex-direction: column; }
+  .timeline-panel { height: var(--bottom-panel-height); width: 100%; }
+}
+
+@media (orientation: landscape) {
+  .main-layout-wrapper { flex-direction: row; }
+  .timeline-panel { 
+    width: var(--right-panel-width); 
+    height: 100%; 
+    border-top: none; 
+    border-left: 1px solid var(--border-color); 
+  }
+}
+
 .sub-scrubber-container {
   background: #111111;
-  padding: 8px 14px;
+  padding: 8px 12px;
   border-bottom: 1px solid #1c1c1c;
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
 }
 .sub-scrubber-container label {
   font-size: 10px;
   font-weight: bold;
   color: var(--main);
-  min-width: 110px;
+  min-width: 105px;
   white-space: nowrap;
 }
 .sub-scrubber-container input[type="range"] {
@@ -257,35 +262,30 @@ input[type="color"] {
   accent-color: var(--main);
   cursor: pointer;
   height: 6px;
-  border-radius: 3px;
 }
 
-/* Core Control Decks */
 .timeline-controls {
   display: flex;
   justify-content: space-between;
-  padding: 10px;
+  padding: 8px;
   background: rgba(0,0,0,0.85);
   border-bottom: 1px solid #181818;
+  flex-wrap: wrap;
+  gap: 6px;
 }
-.control-group { display: flex; gap: 8px; align-items: center; }
+.control-group { display: flex; gap: 6px; align-items: center; }
 
-/* Video Reference Layer Notification Track */
 .video-track-bar {
   display: none;
   align-items: center;
   background: #011d2a;
   border-bottom: 1px solid var(--accent-blue);
   padding: 6px 12px;
-  min-height: 30px;
   font-size: 10px;
   color: var(--accent-blue);
-  white-space: nowrap;
-  overflow-x: hidden;
   font-weight: bold;
 }
 
-/* Master Frame Track Container */
 .timeline-master-container {
   display: flex;
   flex-direction: column;
@@ -298,15 +298,28 @@ input[type="color"] {
   display: flex;
   align-items: center;
   overflow-x: auto;
-  padding: 12px;
+  padding: 10px;
   gap: 10px;
   flex: 1;
 }
 
-/* Frame Thumbnails */
+/* If Landscape setup layout properties inside panel strips container elements stack block */
+@media (orientation: landscape) {
+  .timeline-strip-container {
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    align-items: stretch;
+  }
+  .frame-thumb {
+    width: 100% !important;
+    min-height: 80px;
+  }
+}
+
 .frame-thumb {
-  min-width: 64px;
-  height: 90px;
+  min-width: 72px;
+  height: 85px;
   background: #1a1a1a;
   border: 2px solid #333333;
   border-radius: 8px;
@@ -314,18 +327,16 @@ input[type="color"] {
   cursor: pointer;
   display: flex;
   flex-direction: column;
-  transition: min-width 0.1s cubic-bezier(0.25, 1, 0.5, 1);
 }
 .frame-thumb.active { border-color: var(--main); box-shadow: 0 0 12px var(--shadow); background: #222; }
 .frame-thumb img { width: 100%; flex: 1; object-fit: contain; background: #ffffff; pointer-events: none; border-radius: 6px 6px 0 0; }
-.frame-thumb .frame-num { font-size: 8px; font-weight: 800; text-align: center; background: rgba(0,0,0,0.9); padding: 4px 0; color: #fff; pointer-events: none; border-radius: 0 0 6px 6px; }
+.frame-thumb .frame-num { font-size: 8px; font-weight: 800; text-align: center; background: rgba(0,0,0,0.9); padding: 4px 0; color: #fff; pointer-events: none; }
 .frame-thumb .key-indicator { position: absolute; top: 4px; left: 4px; font-size: 11px; color: var(--accent-yellow); display: none; text-shadow: 0 0 4px #000; }
 
-/* Direct Input Configuration inside Frame Strips */
 .frame-hold-input {
   position: absolute;
   top: 4px;
-  right: 16px;
+  right: 18px;
   width: 34px;
   height: 18px;
   background: rgba(0,0,0,0.9);
@@ -338,7 +349,6 @@ input[type="color"] {
   z-index: 12;
 }
 
-/* Fluid Duration Resizing Node Handle */
 .resize-handle {
   position: absolute;
   top: 0;
@@ -352,17 +362,9 @@ input[type="color"] {
   align-items: center;
   justify-content: center;
 }
-.resize-handle::after {
-  content: "⋮";
-  font-size: 10px;
-  font-weight: bold;
-  color: var(--main);
-}
-.resize-handle:hover, .resize-handle:active {
-  background: rgba(255, 0, 0, 0.2);
-}
+.resize-handle::after { content: "⋮"; font-size: 10px; font-weight: bold; color: var(--main); }
 
-/* Settings, Layers Panels Overlay UI System */
+/* Overlays Panels Setup Details Form Modals UI */
 .panel {
   position: absolute;
   inset: 0;
@@ -375,42 +377,27 @@ input[type="color"] {
   padding: 24px;
   overflow-y: auto;
 }
-.panel h3 { color: var(--main); font-size: 16px; font-weight: 900; text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--main); padding-bottom: 12px; letter-spacing: 1px; }
-.panel-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; transition: transform 0.2s; }
-.panel-close:hover { transform: rotate(90deg) scale(1.1); }
+.panel h3 { color: var(--main); font-size: 15px; font-weight: 900; text-align: center; margin-bottom: 20px; border-bottom: 2px solid var(--main); padding-bottom: 12px; text-transform: uppercase; }
+.panel-close { position: absolute; top: 20px; right: 20px; background: none; border: none; color: #fff; font-size: 22px; cursor: pointer; }
 
-.layers-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; padding-right: 4px; }
-.layer-item { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: rgba(30,30,30,0.6); border: 1px solid #333; border-radius: 8px; transition: border-color 0.2s; }
+.layers-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 20px; }
+.layer-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; background: rgba(30,30,30,0.6); border: 1px solid #333; border-radius: 8px; }
 .layer-item.active { border-color: var(--main); background: rgba(255,0,0,0.05); }
-.layer-controls { display: flex; gap: 12px; }
-.layer-btn { background: none; border: none; color: #fff; font-size: 16px; cursor: pointer; transition: transform 0.1s; }
-.layer-btn:active { transform: scale(0.85); }
+.layer-controls { display: flex; gap: 10px; }
+.layer-btn { background: none; border: none; color: #fff; font-size: 15px; cursor: pointer; }
 
-/* Form Fields Configurations */
-.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
-.field label { font-size: 11px; font-weight: bold; color: var(--main); text-transform: uppercase; letter-spacing: 0.5px; }
-.field input, .field select { padding: 12px; background: #111111; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 13px; font-weight: 600; }
-.field input:focus, .field select:focus { border-color: var(--main); outline: none; }
+.field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+.field label { font-size: 11px; font-weight: bold; color: var(--main); text-transform: uppercase; }
+.field input, .field select { padding: 10px; background: #111111; border: 1px solid #333; color: #fff; border-radius: 8px; font-size: 12px; }
 
-.theme-selector {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-}
-.theme-dot {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 2px solid #fff;
-}
+.theme-selector { display: flex; gap: 10px; margin-bottom: 10px; }
+.theme-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
 
-/* Loading Export Spinner HUD */
 #renderSpinner {
   display: none;
   position: absolute;
   inset: 0;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0,0,0,0.9);
   z-index: 200;
   flex-direction: column;
   justify-content: center;
@@ -418,31 +405,29 @@ input[type="color"] {
   gap: 15px;
 }
 .spinner {
-  width: 50px;
-  height: 50px;
-  border: 5px solid #222;
-  border-top: 5px solid var(--main);
+  width: 46px;
+  height: 46px;
+  border: 4px solid #222;
+  border-top: 4px solid var(--main);
   border-radius: 50%;
-  animation: spin 1s linear infinite;
+  animation: spin 0.8s linear infinite;
 }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 </style>
 </head>
 <body id="appBody">
 
-<!-- Loading/Render Notification Modal -->
 <div id="renderSpinner">
   <div class="spinner"></div>
-  <div id="renderSpinnerText" style="font-weight:bold; letter-spacing:1px; font-size:14px;">RENDERING VIDEO DATA...</div>
+  <div id="renderSpinnerText" style="font-weight:bold; letter-spacing:1px; font-size:13px;">RENDERING VIDEO DATA...</div>
 </div>
 
 <div class="app" id="appWorkspace">
-  <!-- Top Navigation bar structure -->
   <div class="header">
-    <button class="btn" onclick="goHome()">HOME</button>
+    <div class="header-title" onclick="goHome()" style="cursor:pointer;">Animix Studio Pro</div>
     <div class="header-center">
-      <button class="btn" id="undoBtn" onclick="undo()" title="Undo (Ctrl+Z)">↶ UNDO</button>
-      <button class="btn" id="redoBtn" onclick="redo()" title="Redo (Ctrl+Y)">REDO ↷</button>
+      <button class="btn" id="undoBtn" onclick="undo()">↶ UNDO</button>
+      <button class="btn" id="redoBtn" onclick="redo()">REDO ↷</button>
     </div>
     <div class="header-right">
       <button class="btn" onclick="openPanel('layersPanel')">LAYERS</button>
@@ -450,93 +435,76 @@ input[type="color"] {
     </div>
   </div>
 
-  <!-- Primary Interactive Layer -->
-  <div class="workspace">
-    <!-- Action Tools Column Panel -->
-    <div class="sidebar">
-      <input type="color" id="colorPicker" value="#ff0000" onchange="updateColor(event)">
-      <button class="tool-btn active" id="penBtn" onclick="setTool('pen')"><div>✏️</div>PEN</button>
-      <button class="tool-btn" id="eraserBtn" onclick="setTool('eraser')"><div>🧽</div>ERASE</button>
-      <button class="tool-btn" id="lassoBtn" onclick="setTool('lasso')"><div>✂️</div>LASSO</button>
-      <button class="tool-btn" id="zoomBtn" onclick="setTool('zoom')"><div>🔍</div>ZOOM</button>
-      <button class="tool-btn" id="bucketBtn" onclick="setTool('bucket')"><div>🪣</div>FILL</button>
-      <button class="tool-btn" onclick="clearCanvas()"><div>🗑️</div>CLR</button>
-    </div>
-
-    <!-- Live Drawing Canvas Sandbox Screen -->
-    <div class="canvas-area" id="canvasArea">
-      <!-- Lasso Manipulation Keyframe Overlay System -->
-      <div id="keyframeHUD">
-        <button class="btn" style="border-color:var(--accent-yellow); color:var(--accent-yellow);" onclick="setSubKeyframe('start')">◆ START</button>
-        <button class="btn" style="border-color:var(--accent-blue); color:var(--accent-blue);" onclick="setSubKeyframe('end')">◆ END</button>
-        <button class="btn" style="border-color:var(--accent-green); color:var(--accent-green); font-weight:900;" onclick="commitLassoAndDeselect()">✓ DONE</button>
-        <button class="btn" style="border-color:#f44336; color:#f44336;" onclick="clearSubKeyframe()">CLR KEY</button>
+  <div class="main-layout-wrapper">
+    <div class="workspace">
+      <div class="sidebar">
+        <input type="color" id="colorPicker" value="#ff0000" onchange="updateColor(event)">
+        <button class="tool-btn active" id="penBtn" onclick="setTool('pen')"><div>✏️</div>PEN</button>
+        <button class="tool-btn" id="eraserBtn" onclick="setTool('eraser')"><div>🧽</div>ERASE</button>
+        <button class="tool-btn" id="lassoBtn" onclick="setTool('lasso')"><div>✂️</div>LASSO</button>
+        <button class="tool-btn" id="zoomBtn" onclick="setTool('zoom')"><div>🔍</div>ZOOM</button>
+        <button class="tool-btn" id="bucketBtn" onclick="setTool('bucket')"><div>🪣</div>FILL</button>
+        <button class="tool-btn" onclick="clearCanvas()"><div>🗑️</div>CLR</button>
       </div>
 
-      <!-- Main Scale-Transformed Container Platform -->
-      <div id="canvasContainer">
-        <img id="bgImage" alt="bg-ref">
-        <video id="bgVideo" muted playsinline></video>
-        <canvas id="onionCanvas" class="layer-canvas"></canvas>
-        <canvas id="lassoCanvas"></canvas>
-        <canvas id="playbackRenderCanvas"></canvas>
+      <div class="canvas-area" id="canvasArea">
+        <div id="keyframeHUD">
+          <button class="btn" style="border-color:var(--accent-yellow); color:var(--accent-yellow);" onclick="setSubKeyframe('start')">◆ START</button>
+          <button class="btn" style="border-color:var(--accent-blue); color:var(--accent-blue);" onclick="setSubKeyframe('end')">◆ END</button>
+          <button class="btn" style="border-color:var(--accent-green); color:var(--accent-green); font-weight:900;" onclick="commitLassoAndDeselect()">✓ DONE</button>
+          <button class="btn" style="border-color:#f44336; color:#f44336;" onclick="clearSubKeyframe()">CLR KEY</button>
+        </div>
+
+        <div id="canvasContainer">
+          <img id="bgImage" alt="bg-ref">
+          <video id="bgVideo" muted playsinline></video>
+          <canvas id="onionCanvas" class="layer-canvas"></canvas>
+          <canvas id="lassoCanvas"></canvas>
+          <canvas id="playbackRenderCanvas"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="timeline-panel">
+      <div class="sub-scrubber-container">
+        <label id="subScrubLabel">FRAME SCRUB: 0.00s</label>
+        <input type="range" id="subScrubInput" min="0" max="100" value="0" oninput="handleSubScrub(this.value)">
+      </div>
+
+      <div class="timeline-controls">
+        <div class="control-group">
+          <button class="btn" onclick="prevFrame()">◀</button>
+          <button class="btn" id="playBtn" onclick="togglePlay()">▶ PLAY</button>
+          <button class="btn" onclick="nextFrame()">▶</button>
+          <button class="btn" id="onionBtn" onclick="toggleOnion()">🧅 ONION</button>
+        </div>
+        <div class="control-group">
+          <button class="btn" onclick="addFrame()">+ FRAME</button>
+          <button class="btn" onclick="duplicateFrame()">COPY</button>
+          <button class="btn" onclick="deleteFrame()">🗑 DEL</button>
+        </div>
+      </div>
+      
+      <div class="timeline-master-container" id="timelineMaster">
+        <div class="video-track-bar" id="videoTrackBar">🎞️ VIDEO SYNCED: 0.00s</div>
+        <div class="timeline-strip-container" id="timelineStrip"></div>
       </div>
     </div>
   </div>
 
-  <!-- Lower Timeline Scrubber & Controller Configuration Panel -->
-  <div class="bottom-panel">
-    <!-- Local Sub Frame Tweener interpolation system -->
-    <div class="sub-scrubber-container">
-      <label id="subScrubLabel">FRAME SCRUB: 0.00s</label>
-      <input type="range" id="subScrubInput" min="0" max="100" value="0" oninput="handleSubScrub(this.value)">
-    </div>
-
-    <!-- Central Timeline Triggers Block -->
-    <div class="timeline-controls">
-      <div class="control-group">
-        <button class="btn" onclick="prevFrame()">◀</button>
-        <button class="btn" id="playBtn" onclick="togglePlay()">▶ PLAY</button>
-        <button class="btn" onclick="nextFrame()">▶</button>
-        <button class="btn" id="onionBtn" onclick="toggleOnion()">🧅 ONION</button>
-      </div>
-      <div class="control-group">
-        <button class="btn" onclick="addFrame()">+ FRAME</button>
-        <button class="btn" onclick="duplicateFrame()">COPY</button>
-        <button class="btn" onclick="deleteFrame()">🗑 DELETE</button>
-      </div>
-    </div>
-    
-    <!-- Timeline Stream Tracks Mapping Layer -->
-    <div class="timeline-master-container" id="timelineMaster">
-      <div class="video-track-bar" id="videoTrackBar">🎞️ VIDEO TRACK SYNCED: 0.00s</div>
-      <div class="timeline-strip-container" id="timelineStrip"></div>
-    </div>
-  </div>
-
-  <!-- Layers Custom Panel System Overlay Modals -->
   <div class="panel" id="layersPanel">
     <button class="panel-close" onclick="closePanel('layersPanel')">✕</button>
     <h3>PROJECT LAYER MANAGER</h3>
     <div class="layers-list" id="layersList"></div>
-    <button class="btn" onclick="addLayer()" style="width:100%; padding: 14px; font-size:12px;">+ CONSTRUCT NEW LAYER</button>
+    <button class="btn" onclick="addLayer()" style="width:100%; padding: 12px;">+ CONSTRUCT NEW LAYER</button>
   </div>
 
-  <!-- Primary System Project Variable Configuration Screen Overlay Modals -->
   <div class="panel" id="settingsPanel">
     <button class="panel-close" onclick="closePanel('settingsPanel')">✕</button>
-    <h3>PROJECT PREFERENCES & CONFIGURATIONS</h3>
-    
-    <div class="field">
-      <label>UI Experience View Mode</label>
-      <select id="uiModeInput" onchange="switchUiMode(this.value)">
-        <option value="mobile">Mobile Pocket Interface Workspace</option>
-        <option value="desktop">Desktop Full-Screen Production Layout</option>
-      </select>
-    </div>
+    <h3>PROJECT SETTINGS & CODES CONFIG</h3>
 
     <div class="field">
-      <label>Workspace Theme Accent Color</label>
+      <label>Workspace Theme Accent Accent</label>
       <div class="theme-selector">
         <div class="theme-dot" style="background:#ff0000;" onclick="switchTheme('red')"></div>
         <div class="theme-dot" style="background:#00d2ff;" onclick="switchTheme('blue')"></div>
@@ -545,46 +513,44 @@ input[type="color"] {
     </div>
 
     <div class="field">
-      <label>Playback Frame Rate Target (FPS Fix)</label>
+      <label>Playback Target Speed Framerate Target (FPS)</label>
       <input type="number" id="fpsInput" value="12" min="1" max="60" onchange="applyFpsFix(event)">
     </div>
     
     <div class="field">
-      <label>Production Canvas Width Dimension (px)</label>
+      <label>Production Canvas Width Bounds Dimension (px)</label>
       <input type="number" id="widthInput" value="800" min="100" max="4000">
     </div>
     
     <div class="field">
-      <label>Production Canvas Height Dimension (px)</label>
+      <label>Production Canvas Height Bounds Dimension (px)</label>
       <input type="number" id="heightInput" value="600" min="100" max="4000">
     </div>
     
     <div class="field">
-      <label>Reference Static Background Image Input</label>
+      <label>Reference Static Background Artwork Input File</label>
       <input type="file" id="imgInput" accept="image/*">
     </div>
     
     <div class="field">
-      <label>Reference Sync Tracking Video File Input</label>
+      <label>Reference Sync Tracking Cinematic Video File Input</label>
       <input type="file" id="videoInput" accept="video/*">
     </div>
     
-    <div style="display:flex; flex-direction:column; gap:12px; margin-top: 25px;">
-      <button class="btn" onclick="applySettings()" style="background:var(--dark); width:100%; padding:14px;">APPLY WORKSPACE CHANGES</button>
+    <div style="display:flex; flex-direction:column; gap:10px; margin-top: 20px;">
+      <button class="btn" onclick="applySettings()" style="background:var(--dark); width:100%; padding:12px;">APPLY WORKSPACE CHANGES</button>
       <div style="display:flex; gap:10px;">
-        <button class="btn" onclick="exportANI()" style="flex:1;">EXPORT PROJECT JSON (.ANI)</button>
-        <button class="btn" onclick="triggerImportJson()" style="flex:1;">IMPORT PROJECT JSON (.ANI)</button>
+        <button class="btn" onclick="exportANI()" style="flex:1;">EXPORT JSON (.ANI)</button>
+        <button class="btn" onclick="triggerImportJson()" style="flex:1;">IMPORT JSON (.ANI)</button>
       </div>
       <input type="file" id="importJsonFileInput" accept=".ani" style="display:none;" onchange="importANI(event)">
       
-      <!-- Video Rendering Pipeline Action Mechanism -->
-      <button class="btn" onclick="renderAndDownloadVideo()" style="background:var(--accent-green); border-color:var(--accent-green); color:#fff; font-size:13px; padding:15px; width:100%;">🎥 COMPILE & RENDER ANIMATION TO VIDEO (.WEBM)</button>
+      <button class="btn" onclick="renderAndDownloadVideo()" style="background:var(--accent-green); border-color:var(--accent-green); color:#fff; font-size:12px; padding:14px; width:100%;">🎥 COMPILE & RENDER TIMELINE TO WEBM VIDEO</button>
     </div>
   </div>
 </div>
 
 <script>
-// Main Global Architecture Core App State Initialization
 const state = {
   width: 800,
   height: 600,
@@ -595,7 +561,6 @@ const state = {
   playing: false,
   activeFrame: 0,
   activeLayer: 0,
-  uiMode: 'mobile',
   zoomScale: 1.0,
   panX: 0,
   panY: 0,
@@ -609,13 +574,11 @@ const state = {
   ]
 };
 
-// State trackers for workflow execution operations
 let drawing = false;
 let playTimer = null;
 let history = [];
 let historyIndex = -1;
 
-// Lasso tracking memory models
 let lassoPoints = [];
 let isLassoSelecting = false;
 let isLassoDragging = false;
@@ -626,20 +589,17 @@ let lassoDragStart = { x: 0, y: 0 };
 let lassoCurrentOffset = { x: 0, y: 0 };
 let lassoRotationAngle = 0;
 
-// Frame Fluid Timeline Sizing State Machine Indicators
 let isResizing = false;
 let resizeFrameIndex = -1;
 let resizeStartX = 0;
 let resizeStartWidth = 0;
 
-// Two-Finger Interactive Gestural State Monitors
 let touchStartDist = 0;
 let touchStartScale = 1.0;
 let isPanningGesture = false;
 let panStartPointer = { x: 0, y: 0 };
 let panStartOffset = { x: 0, y: 0 };
 
-// Base Object Nodes References mappings Cache
 const container = document.getElementById('canvasContainer');
 const onionCanvas = document.getElementById('onionCanvas');
 const onionCtx = onionCanvas.getContext('2d');
@@ -666,13 +626,16 @@ window.onload = () => {
   setupAdvancedTouchEngine();
   setupKeyboardShortcuts();
 
-  // Attach reference configuration pipeline streams
+  // Watch screen changes dynamically to realign the projection transformation map engine matrixes
+  window.addEventListener('resize', () => { setupCanvasSize(); });
+
   document.getElementById('imgInput').onchange = (e) => {
     let file = e.target.files[0];
     if(file) {
       bgVideo.style.display = 'none';
       bgImage.src = URL.createObjectURL(file);
       bgImage.style.display = 'block';
+      updateUI();
     }
     closePanel('settingsPanel');
   };
@@ -685,6 +648,7 @@ window.onload = () => {
       bgVideo.style.display = 'block';
       videoTrackBar.style.display = 'flex';
       bgVideo.load();
+      updateUI();
     }
     closePanel('settingsPanel');
   };
@@ -692,13 +656,6 @@ window.onload = () => {
   window.addEventListener('pointermove', handleGlobalPointerMove, { passive: false });
   window.addEventListener('pointerup', handleGlobalPointerUp);
 };
-
-// UI View Mode Configuration Controls Switcher Engine
-function switchUiMode(mode) {
-  state.uiMode = mode;
-  document.getElementById('appWorkspace').className = mode === 'desktop' ? 'app desktop-ui' : 'app';
-  setupCanvasSize();
-}
 
 function switchTheme(theme) {
   document.body.className = '';
@@ -721,14 +678,10 @@ function applySettings() {
   closePanel('settingsPanel');
 }
 
-// Layout Matrix Transform Projection Mapping Engine
 function setupCanvasSize() {
-  const baseScale = Math.min((canvasArea.clientWidth - 20) / state.width, (canvasArea.clientHeight - 20) / state.height);
-  
+  const baseScale = Math.min((canvasArea.clientWidth - 30) / state.width, (canvasArea.clientHeight - 30) / state.height);
   container.style.width = `${state.width}px`;
   container.style.height = `${state.height}px`;
-  
-  // Implements combined Scaling (Zoom) and Panning transformations matrices properties layout
   container.style.transform = `translate(${state.panX}px, ${state.panY}px) scale(${baseScale * state.zoomScale})`;
   
   onionCanvas.width = state.width;
@@ -739,7 +692,6 @@ function setupCanvasSize() {
   playbackRenderCanvas.height = state.height;
 }
 
-// Two-Finger Pinch Zoom and Single Finger Pan Hardware Touch Multi-Gesture Track Engine
 function setupAdvancedTouchEngine() {
   canvasArea.addEventListener('touchstart', (e) => {
     if (state.tool !== 'zoom') return;
@@ -758,7 +710,7 @@ function setupAdvancedTouchEngine() {
     if (state.tool !== 'zoom') return;
     if (e.touches.length === 2 && touchStartDist > 0) {
       let curDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
-      state.zoomScale = Math.max(0.15, Math.min(10.0, touchStartScale * (curDist / touchStartDist)));
+      state.zoomScale = Math.max(0.2, Math.min(8.0, touchStartScale * (curDist / touchStartDist)));
       setupCanvasSize();
     } else if (e.touches.length === 1 && isPanningGesture) {
       state.panX = panStartOffset.x + (e.touches[0].clientX - panStartPointer.x);
@@ -768,12 +720,9 @@ function setupAdvancedTouchEngine() {
   }, { passive: true });
 }
 
-// Desktop Layout Fast Action Workflow Keyboard Mapping Shortener Listeners Engine
 function setupKeyboardShortcuts() {
   window.addEventListener('keydown', (e) => {
     if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'SELECT') return;
-    
-    // Direct Active Frame Duration Modifiers adjustments controls mapping
     if (e.key === 'ArrowUp') {
       e.preventDefault();
       state.frames[state.activeFrame].widthFactor = Math.min(20, (state.frames[state.activeFrame].widthFactor || 1) + 0.1);
@@ -786,34 +735,19 @@ function setupKeyboardShortcuts() {
       buildTimeline();
       saveHistoryState();
     }
-
-    // Tools quick selection mapping keys
     if (e.key.toLowerCase() === 'p') setTool('pen');
     if (e.key.toLowerCase() === 'e') setTool('eraser');
     if (e.key.toLowerCase() === 'l') setTool('lasso');
     if (e.key.toLowerCase() === 'z') setTool('zoom');
     if (e.key.toLowerCase() === 'b') setTool('bucket');
-    if (e.key === ' ') {
-      e.preventDefault();
-      togglePlay();
-    }
-    
-    // History pipeline mappings
-    if (e.ctrlKey && e.key.toLowerCase() === 'z') {
-      e.preventDefault();
-      undo();
-    }
-    if (e.ctrlKey && e.key.toLowerCase() === 'y') {
-      e.preventDefault();
-      redo();
-    }
+    if (e.key === ' ') { e.preventDefault(); togglePlay(); }
+    if (e.ctrlKey && e.key.toLowerCase() === 'z') { e.preventDefault(); undo(); }
+    if (e.ctrlKey && e.key.toLowerCase() === 'y') { e.preventDefault(); redo(); }
   });
 }
 
-// Multi-Layer Layer Pipeline Setup Generator Execution Block
 function buildLayerCanvases() {
   document.querySelectorAll('.layer-canvas:not(#onionCanvas):not(#playbackRenderCanvas)').forEach(el => el.remove());
-  
   state.layersDef.forEach((def, index) => {
     const canvas = document.createElement('canvas');
     canvas.width = state.width;
@@ -821,9 +755,8 @@ function buildLayerCanvases() {
     canvas.className = `layer-canvas ${index === state.activeLayer ? 'active-canvas' : ''}`;
     canvas.id = `canvas_l${index}`;
     canvas.style.display = def.visible ? 'block' : 'none';
-    canvas.style.opacity = def.locked ? '0.7' : '1';
+    canvas.style.opacity = def.locked ? '0.6' : '1';
     canvas.style.zIndex = index + 5;
-    
     canvas.addEventListener('pointerdown', startDraw);
     container.appendChild(canvas);
   });
@@ -845,34 +778,24 @@ function getPos(e) {
   };
 }
 
-// Unified Canvas Inputs Draw/Lasso Action Operations Triggering Engine
 function startDraw(e) {
   if (state.playing) return;
   if (state.layersDef[state.activeLayer].locked || !state.layersDef[state.activeLayer].visible) return;
   
   const p = getPos(e);
-
   if (state.tool === 'zoom') return;
-
-  if (state.tool === 'bucket') {
-    floodFillEntireCanvas();
-    return;
-  }
+  if (state.tool === 'bucket') { floodFillEntireCanvas(); return; }
 
   if (state.tool === 'lasso') {
     if (lassoSelectionData) {
       let cx = (lassoBounds.minX + lassoBounds.maxX) / 2 + lassoCurrentOffset.x;
       let cy = (lassoBounds.minY + lassoBounds.maxY) / 2 + lassoCurrentOffset.y;
-      
       let rotHandleY = lassoBounds.minY + lassoCurrentOffset.y - 30;
-      let distToRotHandle = Math.hypot(p.x - cx, p.y - rotHandleY);
-      
-      if (distToRotHandle < 16) {
+      if (Math.hypot(p.x - cx, p.y - rotHandleY) < 18) {
         isRotationHandleDragging = true;
         e.stopPropagation();
         return;
       }
-
       if (p.x >= lassoBounds.minX + lassoCurrentOffset.x && p.x <= lassoBounds.maxX + lassoCurrentOffset.x &&
           p.y >= lassoBounds.minY + lassoCurrentOffset.y && p.y <= lassoBounds.maxY + lassoCurrentOffset.y) {
         isLassoDragging = true;
@@ -881,7 +804,6 @@ function startDraw(e) {
         return;
       }
     }
-    
     if (!lassoSelectionData) {
       isLassoSelecting = true;
       lassoPoints = [p];
@@ -891,7 +813,6 @@ function startDraw(e) {
     return;
   }
 
-  // Active Draw Vector Actions execution properties setup mapping configurations
   drawing = true;
   const ctx = getActiveContext();
   ctx.beginPath();
@@ -902,14 +823,13 @@ function startDraw(e) {
 function executeDrawingStroke(e) {
   if (isResizing || !drawing || state.playing) return;
   e.preventDefault();
-  
   const p = getPos(e);
   const ctx = getActiveContext();
   
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
   ctx.lineWidth = state.tool === 'eraser' ? 24 : 5;
-  ctx.strokeStyle = state.color;
+  ctx.strokeStyle = state.tool === 'eraser' ? '#000000' : state.color;
   ctx.globalCompositeOperation = state.tool === 'eraser' ? 'destination-out' : 'source-over';
   
   ctx.lineTo(p.x, p.y);
@@ -920,11 +840,7 @@ function stopDraw() {
   if (state.tool === 'lasso') {
     if (isLassoSelecting) {
       isLassoSelecting = false;
-      if (lassoPoints.length > 2) {
-        captureLassoSelection();
-      } else {
-        clearLasso();
-      }
+      if (lassoPoints.length > 2) { captureLassoSelection(); } else { clearLasso(); }
     } else if (isLassoDragging || isRotationHandleDragging) {
       isLassoDragging = false;
       isRotationHandleDragging = false;
@@ -932,7 +848,6 @@ function stopDraw() {
     }
     return;
   }
-
   if (!drawing) return;
   drawing = false;
   
@@ -944,29 +859,12 @@ function stopDraw() {
   }
 }
 
-// Pointer Events Tracking Middleware Orchestration Machine
 function handleGlobalPointerMove(e) {
   if (isResizing && resizeFrameIndex !== -1) {
     let deltaX = e.clientX - resizeStartX;
-    let calculatedWidth = Math.max(48, resizeStartWidth + deltaX);
-    let scaleFactor = calculatedWidth / 64;
-    
-    state.frames[resizeFrameIndex].widthFactor = scaleFactor;
-    
-    const elements = document.querySelectorAll('.frame-thumb');
-    if(elements[resizeFrameIndex]) {
-      elements[resizeFrameIndex].style.minWidth = `${calculatedWidth}px`;
-      
-      let calculatedDuration = 0;
-      for(let i=0; i<=resizeFrameIndex; i++) {
-        calculatedDuration += ((state.frames[i].widthFactor || 1) / state.fps);
-      }
-      const label = elements[resizeFrameIndex].querySelector('.frame-num');
-      if(label) label.innerText = `${resizeFrameIndex + 1} (${calculatedDuration.toFixed(2)}s)`;
-      
-      const numInput = elements[resizeFrameIndex].querySelector('.frame-hold-input');
-      if(numInput) numInput.value = scaleFactor.toFixed(1);
-    }
+    let calculatedWidth = Math.max(50, resizeStartWidth + deltaX);
+    state.frames[resizeFrameIndex].widthFactor = calculatedWidth / 72;
+    buildTimeline();
   } else if (state.tool === 'lasso') {
     if (state.playing) return;
     const p = getPos(e);
@@ -1005,18 +903,15 @@ function startResizeHold(e, index) {
   isResizing = true;
   resizeFrameIndex = index;
   resizeStartX = e.clientX;
-  
   const elements = document.querySelectorAll('.frame-thumb');
-  resizeStartWidth = elements[index] ? elements[index].offsetWidth : 64;
+  resizeStartWidth = elements[index] ? elements[index].offsetWidth : 72;
 }
 
-// High Precision Lasso Manipulation Interface Bounds Render Graphics Engine Overlay System
 function renderLassoOverlay() {
   lassoCtx.clearRect(0, 0, state.width, state.height);
   if (lassoPoints.length === 0) return;
 
   lassoCtx.save();
-  
   let cx = (lassoBounds.minX + lassoBounds.maxX) / 2;
   let cy = (lassoBounds.minY + lassoBounds.maxY) / 2;
 
@@ -1032,27 +927,19 @@ function renderLassoOverlay() {
     lassoCtx.drawImage(tempCanvas, lassoBounds.minX, lassoBounds.minY);
   }
 
-  // Border vector graphics mapping track
   lassoCtx.strokeStyle = "var(--accent-blue)";
   lassoCtx.lineWidth = 2;
   lassoCtx.setLineDash([6, 4]);
   lassoCtx.beginPath();
   lassoCtx.moveTo(lassoPoints[0].x, lassoPoints[0].y);
-  for(let i=1; i<lassoPoints.length; i++) {
-    lassoCtx.lineTo(lassoPoints[i].x, lassoPoints[i].y);
-  }
+  for(let i=1; i<lassoPoints.length; i++) { lassoCtx.lineTo(lassoPoints[i].x, lassoPoints[i].y); }
   lassoCtx.closePath();
   lassoCtx.stroke();
   
   if (lassoSelectionData) {
-    // Draws transformation control boundaries bounding frames box outline interface
     lassoCtx.strokeStyle = "rgba(0, 162, 255, 0.4)";
-    lassoCtx.lineWidth = 1;
     lassoCtx.setLineDash([]);
     lassoCtx.strokeRect(lassoBounds.minX, lassoBounds.minY, lassoBounds.maxX - lassoBounds.minX, lassoBounds.maxY - lassoBounds.minY);
-
-    // Dynamic rotation leverage track bar crosshairs HUD
-    lassoCtx.strokeStyle = "var(--accent-blue)";
     lassoCtx.beginPath();
     lassoCtx.moveTo(cx, lassoBounds.minY);
     lassoCtx.lineTo(cx, lassoBounds.minY - 30);
@@ -1060,20 +947,15 @@ function renderLassoOverlay() {
 
     lassoCtx.fillStyle = "var(--accent-blue)";
     lassoCtx.beginPath();
-    lassoCtx.arc(cx, lassoBounds.minY - 30, 8, 0, Math.PI * 2);
+    lassoCtx.arc(cx, lassoBounds.minY - 30, 6, 0, Math.PI * 2);
     lassoCtx.fill();
-    lassoCtx.lineWidth = 2;
-    lassoCtx.strokeStyle = "#ffffff";
-    lassoCtx.stroke();
   }
-
   lassoCtx.restore();
 }
 
 function captureLassoSelection() {
   const ctx = getActiveContext();
   if (!ctx) return;
-
   let xs = lassoPoints.map(p => p.x);
   let ys = lassoPoints.map(p => p.y);
   lassoBounds.minX = Math.min(...xs);
@@ -1083,21 +965,11 @@ function captureLassoSelection() {
 
   let w = lassoBounds.maxX - lassoBounds.minX;
   let h = lassoBounds.maxY - lassoBounds.minY;
-
   if(w <= 1 || h <= 1) return clearLasso();
 
   lassoSelectionData = ctx.getImageData(lassoBounds.minX, lassoBounds.minY, w, h);
   lassoCurrentOffset = { x: 0, y: 0 };
   lassoRotationAngle = 0;
-  
-  lassoPoints = [
-    { x: lassoBounds.minX, y: lassoBounds.minY },
-    { x: lassoBounds.maxX, y: lassoBounds.minY },
-    { x: lassoBounds.maxX, y: lassoBounds.maxY },
-    { x: lassoBounds.minX, y: lassoBounds.maxY }
-  ];
-
-  renderLassoOverlay();
   keyframeHUD.style.display = 'flex';
 }
 
@@ -1107,12 +979,7 @@ function commitLassoTransformation(shouldCommitToHistory = true) {
 
   let unshiftedXs = lassoPoints.map(p => p.x - lassoCurrentOffset.x);
   let unshiftedYs = lassoPoints.map(p => p.y - lassoCurrentOffset.y);
-  let origMinX = Math.min(...unshiftedXs);
-  let origMaxX = Math.max(...unshiftedXs);
-  let origMinY = Math.min(...unshiftedYs);
-  let origMaxY = Math.max(...unshiftedYs);
-
-  ctx.clearRect(origMinX - 2, origMinY - 2, (origMaxX - origMinX) + 4, (origMaxY - origMinY) + 4);
+  ctx.clearRect(Math.min(...unshiftedXs) - 1, Math.min(...unshiftedYs) - 1, (Math.max(...unshiftedXs) - Math.min(...unshiftedXs)) + 2, (Math.max(...unshiftedYs) - Math.min(...unshiftedYs)) + 2);
 
   let tempCanvas = document.createElement('canvas');
   tempCanvas.width = lassoSelectionData.width;
@@ -1122,82 +989,40 @@ function commitLassoTransformation(shouldCommitToHistory = true) {
   ctx.save();
   let cx = (lassoBounds.minX + lassoBounds.maxX) / 2;
   let cy = (lassoBounds.minY + lassoBounds.maxY) / 2;
-
   ctx.translate(cx + lassoCurrentOffset.x, cy + lassoCurrentOffset.y);
   ctx.rotate(lassoRotationAngle);
   ctx.translate(-cx, -cy);
-
   ctx.drawImage(tempCanvas, lassoBounds.minX, lassoBounds.minY);
   ctx.restore();
 
-  lassoBounds.minX += lassoCurrentOffset.x;
-  lassoBounds.maxX += lassoCurrentOffset.x;
-  lassoBounds.minY += lassoCurrentOffset.y;
-  lassoBounds.maxY += lassoCurrentOffset.y;
-
-  lassoPoints = lassoPoints.map(p => {
-    let dx = p.x - cx;
-    let dy = p.y - cy;
-    let rx = dx * Math.cos(lassoRotationAngle) - dy * Math.sin(lassoRotationAngle);
-    let ry = dx * Math.sin(lassoRotationAngle) + dy * Math.cos(lassoRotationAngle);
-    return { x: rx + cx + lassoCurrentOffset.x, y: ry + cy + lassoCurrentOffset.y };
-  });
-
-  lassoCurrentOffset = { x: 0, y: 0 };
-  lassoRotationAngle = 0;
-
   const canvas = document.getElementById(`canvas_l${state.activeLayer}`);
-  if(canvas) {
-    state.frames[state.activeFrame].layers[state.activeLayer] = canvas.toDataURL();
-    updateTimelineThumb(state.activeFrame);
-  }
-
-  if (shouldCommitToHistory) {
-    saveHistoryState();
-  }
+  if(canvas) { state.frames[state.activeFrame].layers[state.activeLayer] = canvas.toDataURL(); updateTimelineThumb(state.activeFrame); }
+  if (shouldCommitToHistory) saveHistoryState();
 }
 
-function commitLassoAndDeselect() {
-  commitLassoTransformation(true);
-  clearLasso();
-}
-
+function commitLassoAndDeselect() { commitLassoTransformation(true); clearLasso(); }
 function clearLasso() {
-  lassoPoints = [];
-  lassoSelectionData = null;
-  isLassoSelecting = false;
-  isLassoDragging = false;
-  isRotationHandleDragging = false;
-  lassoCurrentOffset = { x: 0, y: 0 };
-  lassoRotationAngle = 0;
-  lassoCtx.clearRect(0, 0, state.width, state.height);
+  lassoPoints = []; lassoSelectionData = null; isLassoSelecting = false; isLassoDragging = false; isRotationHandleDragging = false;
+  lassoCurrentOffset = { x: 0, y: 0 }; lassoRotationAngle = 0; lassoCtx.clearRect(0, 0, state.width, state.height);
   keyframeHUD.style.display = 'none';
 }
 
-// Sub-Animation Mathematical Core Keyframing Key Vectors Engine Toggles
 function setSubKeyframe(type) {
   if (!lassoSelectionData) return;
   let currentFrame = state.frames[state.activeFrame];
-  if (!currentFrame.subAnim) {
-    currentFrame.subAnim = { enabled: false, imgDataUrl: null, startPos: null, endPos: null, layerIndex: 0 };
-  }
+  if (!currentFrame.subAnim) currentFrame.subAnim = { enabled: false, imgDataUrl: null, startPos: null, endPos: null, layerIndex: 0 };
   
   let snapCanvas = document.createElement('canvas');
   snapCanvas.width = lassoBounds.maxX - lassoBounds.minX;
   snapCanvas.height = lassoBounds.maxY - lassoBounds.minY;
   snapCanvas.getContext('2d').putImageData(lassoSelectionData, 0, 0);
 
-  let cx = (lassoBounds.minX + lassoBounds.maxX) / 2;
-  let cy = (lassoBounds.minY + lassoBounds.maxY) / 2;
-
   let pivotCoords = {
-    x: cx + lassoCurrentOffset.x,
-    y: cy + lassoCurrentOffset.y,
+    x: ((lassoBounds.minX + lassoBounds.maxX) / 2) + lassoCurrentOffset.x,
+    y: ((lassoBounds.minY + lassoBounds.maxY) / 2) + lassoCurrentOffset.y,
     bX: lassoBounds.minX + lassoCurrentOffset.x,
     bY: lassoBounds.minY + lassoCurrentOffset.y,
-    w: snapCanvas.width,
-    h: snapCanvas.height,
-    rot: lassoRotationAngle
+    w: snapCanvas.width, h: snapCanvas.height, rot: lassoRotationAngle
   };
   
   currentFrame.subAnim.imgDataUrl = snapCanvas.toDataURL();
@@ -1206,32 +1031,23 @@ function setSubKeyframe(type) {
 
   if (type === 'start') currentFrame.subAnim.startPos = pivotCoords;
   if (type === 'end') currentFrame.subAnim.endPos = pivotCoords;
-  
   buildTimeline();
 }
 
 function clearSubKeyframe() {
   state.frames[state.activeFrame].subAnim = { enabled: false, imgDataUrl: null, startPos: null, endPos: null, layerIndex: 0 };
-  clearLasso();
-  buildTimeline();
-  renderCurrentFrame();
+  clearLasso(); buildTimeline(); renderCurrentFrame();
 }
 
-function lerp(start, end, amt) {
-  return (1 - amt) * start + amt * end;
-}
+function lerp(start, end, amt) { return (1 - amt) * start + amt * end; }
 
-// Vector Frame Interpolation Transformer Renderer Process
 function renderInterpolatedKeyframe(frameObj, timeProgress) {
   playbackRenderCtx.clearRect(0, 0, state.width, state.height);
   if (!frameObj.subAnim || !frameObj.subAnim.enabled || !frameObj.subAnim.startPos || !frameObj.subAnim.endPos) return;
 
   let totalFrameDuration = (frameObj.widthFactor || 1) / state.fps;
   let factorRatio = Math.min(1.0, timeProgress / totalFrameDuration); 
-  
-  let anim = frameObj.subAnim;
-  let start = anim.startPos;
-  let end = anim.endPos;
+  let anim = frameObj.subAnim, start = anim.startPos, end = anim.endPos;
 
   let curX = lerp(start.x, end.x, factorRatio);
   let curY = lerp(start.y, end.y, factorRatio);
@@ -1239,7 +1055,6 @@ function renderInterpolatedKeyframe(frameObj, timeProgress) {
 
   let img = new Image();
   img.src = anim.imgDataUrl;
-  
   playbackRenderCtx.save();
   playbackRenderCtx.translate(curX, curY);
   playbackRenderCtx.rotate(curRot);
@@ -1262,10 +1077,7 @@ function handleSubScrub(val) {
 
 function applyFpsFix(e) {
   state.fps = parseInt(e.target.value) || 12;
-  if(state.playing) {
-    togglePlay();
-    togglePlay();
-  }
+  buildTimeline();
 }
 
 function floodFillEntireCanvas() {
@@ -1273,9 +1085,7 @@ function floodFillEntireCanvas() {
   ctx.globalCompositeOperation = 'source-over';
   ctx.fillStyle = state.color;
   ctx.fillRect(0, 0, state.width, state.height);
-  
-  const canvas = document.getElementById(`canvas_l${state.activeLayer}`);
-  state.frames[state.activeFrame].layers[state.activeLayer] = canvas.toDataURL();
+  state.frames[state.activeFrame].layers[state.activeLayer] = document.getElementById(`canvas_l${state.activeLayer}`).toDataURL();
   updateTimelineThumb(state.activeFrame);
   saveHistoryState();
 }
@@ -1285,27 +1095,20 @@ function clearCanvas() {
   const ctx = getActiveContext();
   ctx.clearRect(0, 0, state.width, state.height);
   clearLasso();
-  
-  const canvas = document.getElementById(`canvas_l${state.activeLayer}`);
   state.frames[state.activeFrame].layers[state.activeLayer] = null;
   updateTimelineThumb(state.activeFrame);
   saveHistoryState();
 }
 
 function syncVideoTimeline() {
-  if (bgVideo.src) {
+  if (bgVideo.src && bgVideo.duration) {
     let accumulatedTime = 0;
-    for(let i = 0; i < state.activeFrame; i++) {
-      accumulatedTime += ((state.frames[i].widthFactor || 1) / state.fps);
-    }
-    if(bgVideo.duration) {
-      bgVideo.currentTime = accumulatedTime % bgVideo.duration;
-      videoTrackBar.innerText = `🎞️ VIDEO TRACK SYNCED: ${accumulatedTime.toFixed(2)}s`;
-    }
+    for(let i = 0; i < state.activeFrame; i++) { accumulatedTime += ((state.frames[i].widthFactor || 1) / state.fps); }
+    bgVideo.currentTime = accumulatedTime % bgVideo.duration;
+    videoTrackBar.innerText = `🎞️ VIDEO SYNCED: ${accumulatedTime.toFixed(2)}s`;
   }
 }
 
-// Master Stage Render Execution Orchestration Panel
 function renderCurrentFrame() {
   playbackRenderCanvas.style.display = 'none';
   state.layersDef.forEach((def, index) => {
@@ -1334,9 +1137,7 @@ function renderCurrentFrame() {
 function renderOnionSkin() {
   onionCtx.clearRect(0, 0, state.width, state.height);
   if (!state.onion || state.activeFrame === 0 || state.playing) return;
-  
-  const prevFrameLayers = state.frames[state.activeFrame - 1].layers;
-  prevFrameLayers.forEach(dataURL => {
+  state.frames[state.activeFrame - 1].layers.forEach(dataURL => {
     if (dataURL) {
       const img = new Image();
       img.onload = () => onionCtx.drawImage(img, 0, 0);
@@ -1346,13 +1147,10 @@ function renderOnionSkin() {
 }
 
 function manualHoldInputChange(index, value) {
-  let parsedValue = Math.max(0.1, parseFloat(value) || 1);
-  state.frames[index].widthFactor = parsedValue;
-  buildTimeline();
-  saveHistoryState();
+  state.frames[index].widthFactor = Math.max(0.1, parseFloat(value) || 1);
+  buildTimeline(); saveHistoryState();
 }
 
-// Construction Engine of Timeline Mapping Track Strips Layout Row Interface
 function buildTimeline() {
   timelineStrip.innerHTML = '';
   let cumulativeTime = 0;
@@ -1363,13 +1161,10 @@ function buildTimeline() {
 
     const div = document.createElement('div');
     div.className = `frame-thumb ${i === state.activeFrame ? 'active' : ''}`;
-    div.style.minWidth = `${64 * factor}px`;
+    div.style.minWidth = window.innerHeight > window.innerWidth ? `${72 * factor}px` : '100%';
     div.onclick = (e) => { 
       if(e.target.tagName !== 'INPUT' && !state.playing) { 
-        state.activeFrame = i; 
-        subScrubInput.value = 0; 
-        clearLasso(); 
-        updateUI(); 
+        state.activeFrame = i; subScrubInput.value = 0; clearLasso(); updateUI(); 
       } 
     };
     
@@ -1388,13 +1183,11 @@ function buildTimeline() {
     label.innerText = `${i + 1} (${cumulativeTime.toFixed(2)}s)`;
     div.appendChild(label);
     
-    // Direct numerical input mechanism injected directly inside the timeline stream elements row item box frame cards container element
     const holdInput = document.createElement('input');
     holdInput.type = 'number';
     holdInput.className = 'frame-hold-input';
     holdInput.value = factor.toFixed(1);
     holdInput.step = '0.1';
-    holdInput.min = '0.1';
     holdInput.onclick = e => e.stopPropagation();
     holdInput.onchange = e => manualHoldInputChange(i, e.target.value);
     div.appendChild(holdInput);
@@ -1407,52 +1200,36 @@ function buildTimeline() {
     timelineStrip.appendChild(div);
     updateTimelineThumb(i);
   });
-  
-  const activeThumb = timelineStrip.children[state.activeFrame];
-  if(activeThumb && !isResizing) activeThumb.scrollIntoView({ behavior: 'smooth', inline: 'center' });
 }
 
 function updateTimelineThumb(frameIndex) {
   const thumbImg = document.getElementById(`thumb_img_${frameIndex}`);
   if (!thumbImg) return;
-  
   const tempCanvas = document.createElement('canvas');
-  tempCanvas.width = state.width;
-  tempCanvas.height = state.height;
+  tempCanvas.width = state.width; tempCanvas.height = state.height;
   const tempCtx = tempCanvas.getContext('2d');
   
   let loadedCount = 0;
   const layersData = state.frames[frameIndex].layers.filter(d => d);
-  
-  if (layersData.length === 0) {
-    thumbImg.src = '';
-    return;
-  }
+  if (layersData.length === 0) { thumbImg.src = ''; return; }
 
   layersData.forEach((dataURL) => {
     const img = new Image();
     img.onload = () => {
       tempCtx.drawImage(img, 0, 0);
       loadedCount++;
-      if (loadedCount === layersData.length) {
-        thumbImg.src = tempCanvas.toDataURL('image/jpeg', 0.4);
-      }
+      if (loadedCount === layersData.length) { thumbImg.src = tempCanvas.toDataURL('image/jpeg', 0.3); }
     };
     img.src = dataURL;
   });
 }
 
-// Standard Animation Framework Frames Management triggers Engine
 function addFrame() {
   state.frames.splice(state.activeFrame + 1, 0, { 
     layers: state.layersDef.map(() => null), widthFactor: 1,
     subAnim: { enabled: false, imgDataUrl: null, startPos: null, endPos: null, layerIndex: 0 }
   });
-  state.activeFrame++; 
-  subScrubInput.value = 0; 
-  clearLasso(); 
-  updateUI(); 
-  saveHistoryState();
+  state.activeFrame++; subScrubInput.value = 0; clearLasso(); updateUI(); saveHistoryState();
 }
 
 function duplicateFrame() {
@@ -1461,32 +1238,19 @@ function duplicateFrame() {
     widthFactor: state.frames[state.activeFrame].widthFactor || 1,
     subAnim: JSON.parse(JSON.stringify(state.frames[state.activeFrame].subAnim || {enabled: false}))
   });
-  state.activeFrame++; 
-  subScrubInput.value = 0; 
-  clearLasso(); 
-  updateUI(); 
-  saveHistoryState();
+  state.activeFrame++; subScrubInput.value = 0; clearLasso(); updateUI(); saveHistoryState();
 }
 
 function deleteFrame() {
-  if (state.frames.length <= 1) return alert("Cannot delete the last frame.");
+  if (state.frames.length <= 1) return alert("Cannot delete the last remaining frame layout.");
   state.frames.splice(state.activeFrame, 1);
   if (state.activeFrame >= state.frames.length) state.activeFrame = state.frames.length - 1;
-  subScrubInput.value = 0; 
-  clearLasso(); 
-  updateUI(); 
-  saveHistoryState();
+  subScrubInput.value = 0; clearLasso(); updateUI(); saveHistoryState();
 }
 
-function prevFrame() {
-  if (state.activeFrame > 0) { state.activeFrame--; subScrubInput.value = 0; clearLasso(); updateUI(); }
-}
+function prevFrame() { if (state.activeFrame > 0) { state.activeFrame--; subScrubInput.value = 0; clearLasso(); updateUI(); } }
+function nextFrame() { if (state.activeFrame < state.frames.length - 1) { state.activeFrame++; subScrubInput.value = 0; clearLasso(); updateUI(); } }
 
-function nextFrame() {
-  if (state.activeFrame < state.frames.length - 1) { state.activeFrame++; subScrubInput.value = 0; clearLasso(); updateUI(); }
-}
-
-// Playback Runtime Loop Loop execution framework cycle
 function togglePlay() {
   state.playing = !state.playing;
   document.getElementById('playBtn').innerText = state.playing ? '⏸ PAUSE' : '▶ PLAY';
@@ -1494,20 +1258,16 @@ function togglePlay() {
   if (state.playing) {
     clearLasso();
     playbackRenderCanvas.style.display = 'block';
-    
     let startTimestamp = performance.now();
     let durationTicks = state.frames[state.activeFrame].widthFactor || 1;
     let targetFrameDuration = (1000 / state.fps) * durationTicks;
 
     const playSequence = () => {
       if (!state.playing) return;
-      
       let now = performance.now();
       let elapsed = now - startTimestamp;
-      
       let currentFrameObj = state.frames[state.activeFrame];
-      let factor = currentFrameObj.widthFactor || 1;
-      let maxDuration = (1000 / state.fps) * factor;
+      let maxDuration = (1000 / state.fps) * (currentFrameObj.widthFactor || 1);
 
       let progress = Math.min(1.0, elapsed / maxDuration);
       subScrubInput.value = progress * 100;
@@ -1520,15 +1280,13 @@ function togglePlay() {
 
       if (elapsed >= targetFrameDuration) {
         state.activeFrame++;
-        if (state.activeFrame >= state.frames.length) {
-          state.activeFrame = 0;
-        }
-        
-        durationTicks = state.frames[state.activeFrame].widthFactor || 1;
-        targetFrameDuration = (1000 / state.fps) * durationTicks;
+        if (state.activeFrame >= state.frames.length) state.activeFrame = 0;
+        targetFrameDuration = (1000 / state.fps) * (state.frames[state.activeFrame].widthFactor || 1);
         startTimestamp = performance.now(); 
-        
-        updateUI();
+        renderCurrentFrame();
+        document.querySelectorAll('.frame-thumb').forEach((thumb, index) => {
+          thumb.classList.toggle('active', index === state.activeFrame);
+        });
       }
       playTimer = requestAnimationFrame(playSequence);
     };
@@ -1545,7 +1303,6 @@ function toggleOnion() {
   renderOnionSkin();
 }
 
-// Multi Layer Control Center Layout Constructor Screen Renderer Pipeline
 function renderLayersPanel() {
   const list = document.getElementById('layersList');
   list.innerHTML = '';
@@ -1553,7 +1310,6 @@ function renderLayersPanel() {
     const l = state.layersDef[i];
     const item = document.createElement('div');
     item.className = `layer-item ${i === state.activeLayer ? 'active' : ''}`;
-    
     item.innerHTML = `
       <span style="flex:1; cursor:pointer; font-weight:bold; font-size:12px;" onclick="setActiveLayer(${i})">${l.name}</span>
       <div class="layer-controls">
@@ -1570,57 +1326,40 @@ function addLayer() {
   state.layersDef.push({ name: `Layer ${state.layersDef.length + 1}`, visible: true, locked: false });
   state.frames.forEach(f => f.layers.push(null));
   state.activeLayer = state.layersDef.length - 1;
-  buildLayerCanvases();
-  renderLayersPanel();
-  saveHistoryState();
+  buildLayerCanvases(); renderLayersPanel(); saveHistoryState();
 }
 
 function deleteLayer(index) {
-  if (state.layersDef.length <= 1) return alert("You need at least one layer!");
+  if (state.layersDef.length <= 1) return alert("Requires at least one valid layout track layer.");
   state.layersDef.splice(index, 1);
   state.frames.forEach(f => f.layers.splice(index, 1));
   if (state.activeLayer >= state.layersDef.length) state.activeLayer = Math.max(0, state.layersDef.length - 1);
-  buildLayerCanvases();
-  renderLayersPanel();
-  saveHistoryState();
+  buildLayerCanvases(); renderLayersPanel(); saveHistoryState();
 }
 
-function setActiveLayer(i) {
-  state.activeLayer = i;
-  buildLayerCanvases();
-  renderLayersPanel();
-}
+function setActiveLayer(i) { state.activeLayer = i; buildLayerCanvases(); renderLayersPanel(); }
 function toggleLayerVis(i) { state.layersDef[i].visible = !state.layersDef[i].visible; buildLayerCanvases(); renderLayersPanel(); }
 function toggleLayerLock(i) { state.layersDef[i].locked = !state.layersDef[i].locked; buildLayerCanvases(); renderLayersPanel(); }
 
-// Advanced Undo & Redo History Management System Engine Pipeline States Machine
 function saveHistoryState() {
-  const stateCopy = JSON.parse(JSON.stringify(state.frames));
   history = history.slice(0, historyIndex + 1);
-  history.push(stateCopy);
+  history.push(JSON.parse(JSON.stringify(state.frames)));
   historyIndex++;
-  
   if (history.length > 25) { history.shift(); historyIndex--; }
   updateHistoryButtons();
 }
 
 function undo() {
   if (historyIndex > 0) {
-    historyIndex--;
-    state.frames = JSON.parse(JSON.stringify(history[historyIndex]));
-    clearLasso();
-    updateUI();
-    updateHistoryButtons();
+    historyIndex--; state.frames = JSON.parse(JSON.stringify(history[historyIndex]));
+    clearLasso(); updateUI(); updateHistoryButtons();
   }
 }
 
 function redo() {
   if (historyIndex < history.length - 1) {
-    historyIndex++;
-    state.frames = JSON.parse(JSON.stringify(history[historyIndex]));
-    clearLasso();
-    updateUI();
-    updateHistoryButtons();
+    historyIndex++; state.frames = JSON.parse(JSON.stringify(history[historyIndex]));
+    clearLasso(); updateUI(); updateHistoryButtons();
   }
 }
 
@@ -1634,211 +1373,122 @@ function setTool(t) {
   document.querySelectorAll('.tool-btn').forEach(btn => btn.classList.remove('active'));
   const targetBtn = document.getElementById(t+'Btn');
   if (targetBtn) targetBtn.classList.add('active');
-
-  if (t !== 'lasso') {
-    clearLasso();
-  }
+  if (t !== 'lasso') clearLasso();
 }
 
-function updateColor(e) {
-  state.color = e.target.value;
-}
-
+function updateColor(e) { state.color = e.target.value; }
 function openPanel(id) { document.getElementById(id).style.display = 'flex'; if(id === 'layersPanel') renderLayersPanel(); }
 function closePanel(id) { document.getElementById(id).style.display = 'none'; }
 function updateUI() { renderCurrentFrame(); buildTimeline(); }
-
-function triggerImportJson() {
-  document.getElementById('importJsonFileInput').click();
-}
+function triggerImportJson() { document.getElementById('importJsonFileInput').click(); }
 
 function exportANI() {
   const data = { width: state.width, height: state.height, fps: state.fps, layersDef: state.layersDef, frames: state.frames };
   const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
   const a = document.createElement('a');
   a.href = URL.createObjectURL(blob);
-  a.download = 'project.ani';
-  a.click();
+  a.download = 'project.ani'; a.click();
 }
 
 function importANI(e) {
-  const file = e.target.files[0];
-  if (!file) return;
+  const file = e.target.files[0]; if (!file) return;
   const reader = new FileReader();
   reader.onload = (event) => {
     try {
       const data = JSON.parse(event.target.result);
       if (data.width && data.height && data.frames) {
-        state.width = data.width;
-        state.height = data.height;
-        state.fps = data.fps || 12;
-        state.layersDef = data.layersDef || [ { name: 'Layer 1', visible: true, locked: false } ];
-        state.frames = data.frames;
-        state.activeFrame = 0;
-        state.activeLayer = 0;
-        
+        state.width = data.width; state.height = data.height; state.fps = data.fps || 12;
+        state.layersDef = data.layersDef; state.frames = data.frames;
+        state.activeFrame = 0; state.activeLayer = 0;
         document.getElementById('fpsInput').value = state.fps;
-        document.getElementById('widthInput').value = state.width;
-        document.getElementById('heightInput').value = state.height;
-        
-        setupCanvasSize();
-        buildLayerCanvases();
-        updateUI();
-        saveHistoryState();
-        alert('Project JSON Loaded Successfully!');
+        setupCanvasSize(); buildLayerCanvases(); updateUI(); saveHistoryState();
       }
-    } catch (err) {
-      alert('Invalid .ANI project metadata file.');
-    }
+    } catch (err) { alert('Invalid metadata.'); }
   };
   reader.readAsText(file);
 }
 
-function goHome() {
-  if (confirm('Exit workspace safely? Make sure to save/export your .ani file blocks before backing out!')) {
-    window.location.reload();
-  }
-}
+function goHome() { if (confirm('Exit workspace?')) window.location.reload(); }
 
-// =======================================================================================
-// THE ULTIMATE REAL-TIME HIGH-FIDELITY VIDEO EXPORT RENDER ENGINE (PRO PLUG)
-// =======================================================================================
 async function renderAndDownloadVideo() {
-  if(state.frames.length === 0) return alert("No active frame nodes found to render.");
-  
-  // Activate compilation loading tracking spinner HUD screens overlays interface block modal
+  if(state.frames.length === 0) return;
   const spinner = document.getElementById('renderSpinner');
   const spinnerText = document.getElementById('renderSpinnerText');
   spinner.style.display = 'flex';
+  if (state.playing) togglePlay();
   
-  if (state.playing) togglePlay(); // Freeze current operations sequences smoothly
-  
-  // Allocate dynamic memory tracking context frame buffers maps structures nodes setup
   const renderCanvas = document.createElement('canvas');
-  renderCanvas.width = state.width;
-  renderCanvas.height = state.height;
+  renderCanvas.width = state.width; renderCanvas.height = state.height;
   const rCtx = renderCanvas.getContext('2d');
   
-  // Allocate streaming capture data recording block tracks systems
-  let recordedStream;
-  try {
-    recordedStream = renderCanvas.captureStream(state.fps);
-  } catch(e) {
-    spinner.style.display = 'none';
-    return alert("Your running device web environment profile does not native support HTML5 Canvas stream capture APIs.");
-  }
-  
-  // Initialize modern browser container encoding codec tracking modules packages configurations
-  let options = { mimeType: 'video/webm;codecs=vp9,opus' };
-  if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-    options = { mimeType: 'video/webm;codecs=vp8' };
-    if (!MediaRecorder.isTypeSupported(options.mimeType)) {
-      options = { mimeType: 'video/webm' };
-    }
-  }
+  let recordedStream = renderCanvas.captureStream(state.fps);
+  let options = { mimeType: 'video/webm;codecs=vp9' };
+  if (!MediaRecorder.isTypeSupported(options.mimeType)) options = { mimeType: 'video/webm' };
   
   const videoChunks = [];
   const mediaRecorder = new MediaRecorder(recordedStream, options);
+  mediaRecorder.ondataavailable = (e) => { if (e.data.size > 0) videoChunks.push(e.data); };
   
-  mediaRecorder.ondataavailable = (event) => {
-    if (event.data && event.data.size > 0) {
-      videoChunks.push(event.data);
-    }
-  };
-  
-  // Construct resolution triggers events
-  const videoDownloadPromise = new Promise((resolve) => {
+  const downloadPromise = new Promise((resolve) => {
     mediaRecorder.onstop = () => {
-      const superBuffer = new Blob(videoChunks, { type: 'video/webm' });
-      const videoUrl = URL.createObjectURL(superBuffer);
-      
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.href = videoUrl;
-      downloadAnchor.download = 'animix_studio_render.webm';
-      downloadAnchor.click();
+      const blob = new Blob(videoChunks, { type: 'video/webm' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob); a.download = 'render.webm'; a.click();
       resolve();
     };
   });
   
   mediaRecorder.start();
   
-  // Iterative rendering engine loop sequence across all frame nodes tracking tracks timelines
   for (let f = 0; f < state.frames.length; f++) {
-    spinnerText.innerText = `COMPILING & PROCESSING FRAME GRID INDICES: ${f + 1} / ${state.frames.length}`;
-    
+    spinnerText.innerText = `RENDERING FRAME: ${f + 1} / ${state.frames.length}`;
     let currentFrame = state.frames[f];
-    let holdFactor = currentFrame.widthFactor || 1;
-    let totalTicksForFrame = Math.max(1, Math.round(holdFactor)); // Duration converted to explicit frame count
+    let holdTicks = Math.max(1, Math.round(currentFrame.widthFactor || 1));
     
-    // Sub-frame dynamic loop tick system for interpolation handling during recording
-    for (let tick = 0; tick < totalTicksForFrame; tick++) {
-      rCtx.clearRect(0, 0, state.width, state.height);
+    for (let tick = 0; tick < holdTicks; tick++) {
+      rCtx.fillStyle = "#ffffff";
+      rCtx.fillRect(0, 0, state.width, state.height);
       
-      // Render static user background reference structures safely if present inside timeline settings context bounds
       if (bgImage.style.display === 'block' && bgImage.src) {
         rCtx.drawImage(bgImage, 0, 0, state.width, state.height);
       }
       
-      // Compute sub-animation timeline fraction interpolation factors ratio offsets values
-      let currentProgressTime = (tick / totalTicksForFrame) * (holdFactor / state.fps);
+      let currentProgressTime = (tick / holdTicks) * (holdTicks / state.fps);
       
-      // Run sequentially inside standard layer layout structures stacking sequence index channels mapping track bounds
       for (let l = 0; l < state.layersDef.length; l++) {
         if (!state.layersDef[l].visible) continue;
-        
-        // Render explicit drawing layers
         if (currentFrame.layers[l]) {
           await new Promise((res) => {
             const imgNode = new Image();
-            imgNode.onload = () => {
-              rCtx.save();
-              rCtx.globalAlpha = state.layersDef[l].locked ? 0.7 : 1.0;
-              rCtx.drawImage(imgNode, 0, 0);
-              rCtx.restore();
-              res();
-            };
+            imgNode.onload = () => { rCtx.drawImage(imgNode, 0, 0); res(); };
             imgNode.src = currentFrame.layers[l];
           });
         }
-        
-        // Inject and draw sub-animated keyframe transformations interpolation onto the rendering context frame
-        if (currentFrame.subAnim && currentFrame.subAnim.enabled && currentFrame.subAnim.layerIndex === l && currentFrame.subAnim.startPos && currentFrame.subAnim.endPos) {
-          let anim = currentFrame.subAnim;
-          let start = anim.startPos;
-          let end = anim.endPos;
-          let totalDuration = holdFactor / state.fps;
-          let progressRatio = totalDuration > 0 ? Math.min(1.0, currentProgressTime / totalDuration) : 1.0;
-          
-          let curX = lerp(start.x, end.x, progressRatio);
-          let curY = lerp(start.y, end.y, progressRatio);
-          let curRot = lerp(start.rot, end.rot, progressRatio);
+        if (currentFrame.subAnim && currentFrame.subAnim.enabled && currentFrame.subAnim.layerIndex === l) {
+          let anim = currentFrame.subAnim, start = anim.startPos, end = anim.endPos;
+          let ratio = currentProgressTime / (holdTicks / state.fps);
+          let curX = lerp(start.x, end.x, ratio);
+          let curY = lerp(start.y, end.y, ratio);
+          let curRot = lerp(start.rot, end.rot, ratio);
           
           await new Promise((res) => {
             const tImg = new Image();
             tImg.onload = () => {
-              rCtx.save();
-              rCtx.translate(curX, curY);
-              rCtx.rotate(curRot);
+              rCtx.save(); rCtx.translate(curX, curY); rCtx.rotate(curRot);
               rCtx.drawImage(tImg, start.bX - start.x, start.bY - start.y, start.w, start.h);
-              rCtx.restore();
-              res();
+              rCtx.restore(); res();
             };
             tImg.src = anim.imgDataUrl;
           });
         }
       }
-      
-      // Deliberately delay frames capture ticks slightly to provide canvas buffers execution streams mapping sync pipeline
       await new Promise(r => setTimeout(r, 1000 / state.fps));
     }
   }
   
-  // Finalize stream streams collection tracking parameters pipelines
   mediaRecorder.stop();
-  await videoDownloadPromise;
-  
+  await downloadPromise;
   spinner.style.display = 'none';
-  alert("High-Fidelity MediaRecorder Video compilation Render Complete! File downloaded as 'animix_studio_render.webm'.");
 }
 </script>
 </body>
